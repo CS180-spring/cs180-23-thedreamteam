@@ -23,11 +23,17 @@ GenericDB allow users to store and interact with data. Users can communicate wit
     > User can click on "Create" to directly add to the database <br />
     > User can click "Modify" to search, see, and sort collections in query <br />
    2. Create: page will allow users to add to database 
-    > User will enter the follwoing infromation <br />
+     User will enter the follwoing infromation: <br />
     >> a. Collection name: a name that file will be sorted under as <br />
     >> b. Data Type: upload the file user wants to upload to database <br />
     >> c. Create: adds the data type and collection name to database on backend <br /> 
-  >> 
+  3. Modify: this page allows users to see database entries
+    >> User can search in search bar to see different collections under the searched string 
+    >> User can search in search bar to see file type results under the searched string 
+    >> User can filter if they want to display results based on file name or collection name
+   4. Try Now: tells users the functionalities of GenericDB
+    >> Users can access the page by clicking on "Learn more" from the home page or at top right
+    
 - Feature 1: Ability to create, add, or delete documents. Update the documents
 - Feature 2: Ability to search and filter documents in database
 - Feature 3: Query the database using JSON/SQL Should include path query too.
