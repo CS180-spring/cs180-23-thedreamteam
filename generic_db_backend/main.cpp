@@ -88,7 +88,7 @@ void addDocument()
 
 void deleteDocument()
 {
-    std::cout << "Enter the file to delete from database (ex: test.json)" << std::endl;
+    std::cout << "Enter the file to delete from database (ex: [collectionname]/[filename])" << std::endl;
     std::string filepath;
     std::cin >> filepath;
 
