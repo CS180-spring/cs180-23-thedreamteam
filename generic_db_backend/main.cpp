@@ -6,7 +6,7 @@
 #include <sys/stat.h>
 #include <vector>
 #include <filesystem>
-//#include "rapidjson/document.h"
+#include "rapidjson/document.h"
 
 
 namespace fs = std::filesystem;
@@ -188,7 +188,11 @@ void searchDatabase(){
     std::cin >> fileName; 
 
     //\generic_db_backend\db\searchFile\test.json
-    pathToFileName =  "./db/" + collectionName +"/" + fileName + ".json"; 
+    
+
+
+
+}pathToFileName =  "./db/" + collectionName +"/" + fileName + ".json"; 
 
     std::ifstream file(pathToFileName); 
     //file.open(pathToFileName, std::fstream::in); 
@@ -201,7 +205,3 @@ void searchDatabase(){
     }
 
     file.close(); 
-
-
-
-}
