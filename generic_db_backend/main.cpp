@@ -6,7 +6,8 @@
 #include <sys/stat.h>
 #include <vector>
 #include <filesystem>
-#include "rapidjson/document.h"
+//#include "rapidjson/document.h"
+
 
 namespace fs = std::__fs::filesystem;
 
@@ -139,4 +140,30 @@ void getCollectionList(std::vector<std::string>& collectionList) {
              collectionList.push_back(entry.path().filename().string());
         }
     }
+}
+
+void getFileList (std::vector<std::string>& fileList, const std::string& collectionName){
+
+}
+/**
+ * Search database for contents given file and collection name
+ * 1. Display all existing collections to chose from 
+ * 2. Display all files in collection to chose from 
+ * 3. Search for content in file 
+*/
+void searchDatabase(){
+    std::string collectionName;
+    std::vector<std::string> collectionList;
+
+    std::cout << "Here are all the avaliable collections: ";
+    getCollectionList(collectionList); 
+
+    for (unsigned int i =0; i < collectionList.size(); i++){
+        std::cout << collectionList.at(i) << " "; 
+    }
+    std::cout << "Here are a list of files under that collection: "; 
+
+    std::cout << "Enter a name of the collection searching for: ";
+    std::cin >> collectionName;
+
 }
