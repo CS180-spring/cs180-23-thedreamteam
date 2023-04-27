@@ -2,34 +2,45 @@
 #include <iostream>
 #include <fstream>
 #include <cstdio>
-#include "./src/document.h"
-#include "./src/collection.h"
+#include <string>
+#include <sys/stat.h>
+#include <vector>
+#include <filesystem>
 #include "rapidjson/document.h"
 
-void addDocument();
+namespace fs = std::__fs::filesystem;
+
+
+void addDocument(std::vector<std::string>& collectionList);
 void deleteDocument();
+void addCollection(std::vector<std::string>& collectionList);
+void getCollectionList(std::vector<std::string>& collectionList);
 std::string get_file_name(const std::string& file_path);
+
 
 int main() {
     int option;
+    std::vector<std::string> collectionlist;
+
     std::cout << "** GenericDB **" << std::endl;
     std::cout << "Choose from the following operations" << std::endl;
     std::cout << "1. Add a document to the database" << std::endl;
     std::cout << "2. Delete a document from the database" << std::endl;
+    std::cout << "3. Create a collection" << std::endl;
     std::cout << "9. Exit" << std::endl;
     std::cout << "Enter option: ";
     std::cin >> option;
 
     
     switch(option){
-        case(1): addDocument(); break;
+        case(1): addDocument(collectionlist); break;
         case(2): deleteDocument(); break;
+        case(3): addCollection(collectionlist); break;
     }
-
-
+    
 }
 
-void addDocument() {
+void addDocument(std::vector<std::string>& collectionList) {
     std::cout << "Enter a file path to add to database" << std::endl;
     std::string filepath;
     std::cin >> filepath;
@@ -37,9 +48,26 @@ void addDocument() {
     std::cout << filepath << std::endl;
     std::ifstream inputfile(filepath);
 
+    getCollectionList(collectionList);
+    if(collectionList.size() == 0) {
+        std::cout << "No collections found. Must insert a document into a collection." << std::endl;
+        addCollection(collectionList);
+    }
+    
+    std::string collectionChoice;
+
+    std::cout << "Select one of the following collections to insert document into." << std::endl;
+    for(unsigned int i =0; i < collectionList.size(); ++i) {
+        std::cout << collectionList.at(i) << " ";
+    }
+    std::cout << "\n\n";
+    std::cin >> collectionChoice;
+
+
+
     // std::cout << file.is_open() << std::endl;
     std::string filename = get_file_name(filepath);
-    std::ofstream fout("./db/" + filename);
+    std::ofstream fout("./db/" + collectionChoice + "/" + filename);
 
     std::string line;
     while (getline(inputfile, line)) {
@@ -66,9 +94,32 @@ void deleteDocument() {
 
 }
 
-/* Extracts file name from PATH url via string manipulation.
-    Ex. file_path = /Users/alishaikh/Desktop/test.json
-    RETURNS: test.json
+/*
+Allows user to add collections to the database (db) file.
+*/
+void addCollection(std::vector<std::string>& collectionList) {
+    std::string collectionname;
+
+    std::cout << "Enter a name for the new collection: ";
+    std::cin >> collectionname;
+
+    std::string parent_directory_path = "./db";
+
+    std::string new_collection_path = parent_directory_path + "/" + collectionname;
+
+    if (mkdir(new_collection_path.c_str(), 0777) == -1) {
+        std::cerr << "Error creating directory!\n";
+        exit(1);
+    }
+    collectionList.push_back(collectionname);
+
+    std::cout << "Collection created successfully!" << std::endl;
+}
+
+/* 
+Extracts file name from PATH url via string manipulation.
+Ex. file_path = /Users/alishaikh/Desktop/test.json
+RETURNS: test.json
 */
 std::string get_file_name(const std::string& file_path) {
   size_t last_slash_index = file_path.find_last_of("/\\");
@@ -78,29 +129,16 @@ std::string get_file_name(const std::string& file_path) {
   return file_path.substr(last_slash_index + 1);
 }
 
-
-// int main() {
-
-//     std::string dataInput1 = "This is a data input for CS180!";
-//     Document doc1(dataInput1);
-
-//     std::string dataInput2 = "What do you call a bagel that can fly? A plain bagel.";
-//     Document doc2(dataInput1);
-
-//     std::string dataInput3 = "This is tedious";
-//     Document doc3(dataInput1);
-
-//     std::string collectionName = "files";
-//     Collection documentCollection(collectionName);
-
-//     documentCollection.addDoc(dataInput1);
-//     documentCollection.addDoc(dataInput2);
-//     documentCollection.addDoc(dataInput3);
-
-//     documentCollection.printDocs();
-
-
-
-
-// }
-
+/*
+Populates pass by reference vector with list of all collections in the database.
+*/
+void getCollectionList(std::vector<std::string>& collectionList) {
+    fs::path path_to_dir("./db");
+     for (const auto& entry : fs::directory_iterator(path_to_dir))
+    {
+        if (entry.is_directory())
+        {
+             collectionList.push_back(entry.path().filename().string());
+        }
+    }
+}

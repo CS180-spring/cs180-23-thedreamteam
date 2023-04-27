@@ -4,3 +4,5 @@ exec
 Makefile
 *.exe
 *.o
+CMakeFiles/
+*.out
