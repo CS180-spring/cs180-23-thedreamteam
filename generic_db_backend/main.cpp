@@ -9,7 +9,7 @@
 //#include "rapidjson/document.h"
 
 
-namespace fs = std::__fs::filesystem;
+namespace fs = std::filesystem;
 
 
 void addDocument();
@@ -17,6 +17,8 @@ void deleteDocument();
 void addCollection();
 void getCollectionList(std::vector<std::string>& collectionList);
 std::string get_file_name(const std::string& file_path);
+void getFileList (std::vector<std::string>& fileList, const std::string& collectionName); 
+void searchDatabase(); 
 
 
 int main() {
@@ -28,6 +30,7 @@ int main() {
     std::cout << "1. Add a document to the database" << std::endl;
     std::cout << "2. Delete a document from the database" << std::endl;
     std::cout << "3. Create a collection" << std::endl;
+    std::cout << "4. Search for file in collection" << std::endl; 
     std::cout << "9. Exit" << std::endl;
     std::cout << "Enter option: ";
     std::cin >> option;
@@ -36,6 +39,7 @@ int main() {
         case(1): addDocument(); break;
         case(2): deleteDocument(); break;
         case(3): addCollection(); break;
+        case(4): searchDatabase(); break; 
     }
     
 }
@@ -143,7 +147,15 @@ void getCollectionList(std::vector<std::string>& collectionList) {
 }
 
 void getFileList (std::vector<std::string>& fileList, const std::string& collectionName){
+//  generic_db_backend\db\searchFile
+    std::string pathToCollection = "./db/" + collectionName; 
+    for (auto& i : std::filesystem::directory_iterator(pathToCollection)){
+        std::cout << i.path().filename() << std::endl; 
+    }
+}
 
+void printFileContent(const std::string fileName){
+    
 }
 /**
  * Search database for contents given file and collection name
@@ -153,17 +165,43 @@ void getFileList (std::vector<std::string>& fileList, const std::string& collect
 */
 void searchDatabase(){
     std::string collectionName;
+    std::string fileName; 
+    std::string pathToFileName; 
+    std::string line;
     std::vector<std::string> collectionList;
+    std::vector<std::string> filesInCollection; 
 
     std::cout << "Here are all the avaliable collections: ";
     getCollectionList(collectionList); 
-
     for (unsigned int i =0; i < collectionList.size(); i++){
         std::cout << collectionList.at(i) << " "; 
     }
-    std::cout << "Here are a list of files under that collection: "; 
+    std::cout << "\n\n";
 
     std::cout << "Enter a name of the collection searching for: ";
     std::cin >> collectionName;
+
+    std::cout << "Here are a list of files under that collection: "; 
+    getFileList(filesInCollection, collectionName); 
+
+    std::cout << "Select a file to view: "; 
+    std::cin >> fileName; 
+
+    //\generic_db_backend\db\searchFile\test.json
+    pathToFileName =  "./db/" + collectionName +"/" + fileName + ".json"; 
+
+    std::ifstream file(pathToFileName); 
+    //file.open(pathToFileName, std::fstream::in); 
+    if (!file) {
+        std::cout << "Error opening file\n";
+    }
+
+    while (getline(file, line)) {
+         std::cout << line << std::endl;  
+    }
+
+    file.close(); 
+
+
 
 }
