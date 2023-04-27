@@ -11,16 +11,16 @@
 namespace fs = std::__fs::filesystem;
 
 
-void addDocument(std::vector<std::string>& collectionList);
+void addDocument();
 void deleteDocument();
-void addCollection(std::vector<std::string>& collectionList);
+void addCollection();
 void getCollectionList(std::vector<std::string>& collectionList);
 std::string get_file_name(const std::string& file_path);
 
 
 int main() {
     int option;
-    std::vector<std::string> collectionlist;
+
 
     std::cout << "** GenericDB **" << std::endl;
     std::cout << "Choose from the following operations" << std::endl;
@@ -31,16 +31,15 @@ int main() {
     std::cout << "Enter option: ";
     std::cin >> option;
 
-    
     switch(option){
-        case(1): addDocument(collectionlist); break;
+        case(1): addDocument(); break;
         case(2): deleteDocument(); break;
-        case(3): addCollection(collectionlist); break;
+        case(3): addCollection(); break;
     }
     
 }
 
-void addDocument(std::vector<std::string>& collectionList) {
+void addDocument() {
     std::cout << "Enter a file path to add to database" << std::endl;
     std::string filepath;
     std::cin >> filepath;
@@ -48,10 +47,12 @@ void addDocument(std::vector<std::string>& collectionList) {
     std::cout << filepath << std::endl;
     std::ifstream inputfile(filepath);
 
+    std::vector<std::string> collectionList;
     getCollectionList(collectionList);
+
     if(collectionList.size() == 0) {
         std::cout << "No collections found. Must insert a document into a collection." << std::endl;
-        addCollection(collectionList);
+        addCollection();
     }
     
     std::string collectionChoice;
@@ -62,8 +63,6 @@ void addDocument(std::vector<std::string>& collectionList) {
     }
     std::cout << "\n\n";
     std::cin >> collectionChoice;
-
-
 
     // std::cout << file.is_open() << std::endl;
     std::string filename = get_file_name(filepath);
@@ -97,7 +96,7 @@ void deleteDocument() {
 /*
 Allows user to add collections to the database (db) file.
 */
-void addCollection(std::vector<std::string>& collectionList) {
+void addCollection() {
     std::string collectionname;
 
     std::cout << "Enter a name for the new collection: ";
@@ -111,7 +110,6 @@ void addCollection(std::vector<std::string>& collectionList) {
         std::cerr << "Error creating directory!\n";
         exit(1);
     }
-    collectionList.push_back(collectionname);
 
     std::cout << "Collection created successfully!" << std::endl;
 }
