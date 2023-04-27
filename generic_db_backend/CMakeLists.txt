@@ -1,6 +1,7 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
 SET(CMAKE_CXX_STANDARD 14)
+set (CMAKE_CXX_FLAGS "-lstdc++fs -std=c++17")
 
 ADD_EXECUTABLE(exec
 	 main.cpp
