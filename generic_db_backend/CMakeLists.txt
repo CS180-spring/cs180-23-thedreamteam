@@ -4,7 +4,5 @@ SET(CMAKE_CXX_STANDARD 14)
 
 ADD_EXECUTABLE(exec
 	 main.cpp
-	./src/collection.cpp
-    ./src/document.cpp
 )
 
