@@ -61,7 +61,7 @@ int main()
             displayMenu = false; 
             break;
         default:
-            std::cout << "Unrecognized choice. Try again!" << std::endl; 
+            std::cout << "Unrecognized choice. Try again and input another number." << std::endl << std::endl; 
             break;
         }
     }
@@ -146,7 +146,7 @@ void addCollection()
         exit(1);
     }
 
-    std::cout << "Collection created successfully!" << std::endl;
+    std::cout << "Collection created successfully!" << std::endl << std::endl;
 }
 
 /*
@@ -277,6 +277,7 @@ void createDocument()
         getCollectionList(collectionList);
     }
     std::cout << "Select a collection to store the file in." << std::endl;
+    std::cout << "Here are the current collections in our database:" << std::endl;
 
     for (unsigned int i = 0; i < collectionList.size(); ++i)
     {
