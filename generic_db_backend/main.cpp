@@ -29,13 +29,14 @@ int main()
     while(displayMenu) 
     {
         std::cout << "** GenericDB **" << std::endl;
-        std::cout << "Choose from the following operations" << std::endl;
+        std::cout << "Choose from the following operations:" << std::endl;
         std::cout << "1. Add a document to the database" << std::endl;
         std::cout << "2. Delete a document from the database" << std::endl;
         std::cout << "3. Create a collection" << std::endl;
         std::cout << "4. Search for file in collection" << std::endl;
         std::cout << "5. Create a document" << std::endl;
-        std::cout << "9. Exit" << std::endl;
+        std::cout << "20. Exit" << std::endl;
+        std::cout << "......................................." << std::endl;
         std::cout << "Enter option: ";
         std::cin >> option;
 
@@ -55,6 +56,12 @@ int main()
             break;
         case (5):
             createDocument();
+            break;
+        case (20):
+            displayMenu = false; 
+            break;
+        default:
+            std::cout << "Unrecognized choice. Try again!" << std::endl; 
             break;
         }
     }
