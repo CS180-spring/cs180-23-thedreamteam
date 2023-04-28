@@ -24,34 +24,39 @@ int main()
 {
     int option;
 
-    std::cout << "** GenericDB **" << std::endl;
-    std::cout << "Choose from the following operations" << std::endl;
-    std::cout << "1. Add a document to the database" << std::endl;
-    std::cout << "2. Delete a document from the database" << std::endl;
-    std::cout << "3. Create a collection" << std::endl;
-    std::cout << "4. Search for file in collection" << std::endl;
-    std::cout << "5. Create a document" << std::endl;
-    std::cout << "9. Exit" << std::endl;
-    std::cout << "Enter option: ";
-    std::cin >> option;
+    bool displayMenu = true;
 
-    switch (option)
+    while(displayMenu) 
     {
-    case (1):
-        addDocument();
-        break;
-    case (2):
-        deleteDocument();
-        break;
-    case (3):
-        addCollection();
-        break;
-    case (4):
-        searchDatabase();
-        break;
-    case (5):
-        createDocument();
-        break;
+        std::cout << "** GenericDB **" << std::endl;
+        std::cout << "Choose from the following operations" << std::endl;
+        std::cout << "1. Add a document to the database" << std::endl;
+        std::cout << "2. Delete a document from the database" << std::endl;
+        std::cout << "3. Create a collection" << std::endl;
+        std::cout << "4. Search for file in collection" << std::endl;
+        std::cout << "5. Create a document" << std::endl;
+        std::cout << "9. Exit" << std::endl;
+        std::cout << "Enter option: ";
+        std::cin >> option;
+
+        switch (option)
+        {
+        case (1):
+            addDocument();
+            break;
+        case (2):
+            deleteDocument();
+            break;
+        case (3):
+            addCollection();
+            break;
+        case (4):
+            searchDatabase();
+            break;
+        case (5):
+            createDocument();
+            break;
+        }
     }
 }
 
