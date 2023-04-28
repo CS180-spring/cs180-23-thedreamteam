@@ -19,6 +19,7 @@ void getCollectionList(std::vector<std::string> &collectionList);
 std::string get_file_name(const std::string &file_path);
 void getFileList(std::vector<std::string> &fileList, const std::string &collectionName);
 void searchDatabase();
+void viewCurrCollectAndFiles();
 
 int main()
 {
@@ -35,6 +36,7 @@ int main()
         std::cout << "3. Create a collection" << std::endl;
         std::cout << "4. Search for file in collection" << std::endl;
         std::cout << "5. Create a document" << std::endl;
+        std::cout << "6. View current collections and files" << std::endl;
         std::cout << "20. Exit" << std::endl;
         std::cout << "......................................." << std::endl;
         std::cout << "Enter option: ";
@@ -56,6 +58,9 @@ int main()
             break;
         case (5):
             createDocument();
+            break;
+        case (6):
+            viewCurrCollectAndFiles();
             break;
         case (20):
             displayMenu = false; 
@@ -297,4 +302,9 @@ void createDocument()
     fout.close();
 
     std::cout << "JSON file created successfully and stored in collection: " << collectionChoice << std::endl;
+}
+
+void viewCurrCollectAndFiles() 
+{
+    
 }
