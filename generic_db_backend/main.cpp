@@ -306,5 +306,22 @@ void createDocument()
 
 void viewCurrCollectAndFiles() 
 {
-    
+    std::vector<std::string> collectionList;
+    getCollectionList(collectionList);
+
+    if (collectionList.size() == 0) 
+    {
+        std::cout << "Here are the current collections and files that reside within them: " << std::endl;
+
+        // outputs all existing collections separated by a newline 
+        for (unsigned int i = 0; i < collectionList.size(); ++i)
+        {
+            std::cout << collectionList.at(i) << std::endl;
+        }
+    }
+    else // executes when there's no collections or files 
+    {
+        std::cout << "There are currently no existing collections or files." << std::endl;
+        std::cout << "Please create some collections and files before trying this option again!" << std::endl;
+    }
 }
