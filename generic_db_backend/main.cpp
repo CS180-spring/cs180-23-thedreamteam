@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <fstream>
 #include <cstdio>
@@ -7,7 +6,9 @@
 #include <vector>
 #include <filesystem>
 #include <algorithm>
+#include "nlohmann/json.hpp"
 
+using json = nlohmann::json;
 namespace fs = std::__fs::filesystem;
 
 void addDocument();
@@ -19,6 +20,10 @@ void getCollectionList(std::vector<std::string> &collectionList);
 std::string get_file_name(const std::string &file_path);
 void getFileList(std::vector<std::string> &fileList, const std::string &collectionName);
 void searchDatabase();
+void updateDocument();
+void searchParameter();
+void handleSearchRequest(const std::string&, const std::string&);
+
 void viewCurrCollectAndFiles();
 
 int main()
@@ -27,7 +32,7 @@ int main()
 
     bool displayMenu = true;
 
-    while(displayMenu) 
+    while (displayMenu)
     {
         std::cout << "** GenericDB **" << std::endl;
         std::cout << "Choose from the following operations:" << std::endl;
@@ -35,12 +40,15 @@ int main()
         std::cout << "2. Delete a document from the database" << std::endl;
         std::cout << "3. Create a collection" << std::endl;
         std::cout << "4. Search for file in collection" << std::endl;
-        std::cout << "5. Create a document" << std::endl;
-        std::cout << "6. View current collections and files" << std::endl;
+        std::cout << "5. Search for a specific parameter" << std::endl;
+        std::cout << "6. Create a document" << std::endl;
+        std::cout << "7. Update a document" << std::endl;
+        std::cout << "8. View current collections and files" << std::endl;
         std::cout << "20. Exit" << std::endl;
         std::cout << "......................................." << std::endl;
         std::cout << "Enter option: ";
         std::cin >> option;
+        std::cout << "\n\n";
 
         switch (option)
         {
@@ -57,16 +65,23 @@ int main()
             searchDatabase();
             break;
         case (5):
-            createDocument();
+            searchParameter();
             break;
         case (6):
+            createDocument();
+            break;
+        case(7):
+            updateDocument();
+            break;
+        case (8):
             viewCurrCollectAndFiles();
             break;
         case (20):
-            displayMenu = false; 
+            displayMenu = false;
             break;
         default:
-            std::cout << "Unrecognized choice. Try again and input another number." << std::endl << std::endl; 
+            std::cout << "Unrecognized choice. Try again and input another number." << std::endl
+                      << std::endl;
             break;
         }
     }
@@ -151,7 +166,8 @@ void addCollection()
         exit(1);
     }
 
-    std::cout << "Collection created successfully!" << std::endl << std::endl;
+    std::cout << "Collection created successfully!" << std::endl
+              << std::endl;
 }
 
 /*
@@ -212,7 +228,7 @@ void searchDatabase()
     std::vector<std::string> collectionList;
     std::vector<std::string> filesInCollection;
 
-    std::cout << "Here are all the avaliable collections: ";
+    std::cout << "Here are all the available collections: ";
     getCollectionList(collectionList);
     for (unsigned int i = 0; i < collectionList.size(); i++)
     {
@@ -252,7 +268,7 @@ void createDocument()
     std::string filename;
     std::string collectionChoice;
 
-    std::cout << "Enter the contents of the JSON document (type END on a new line to finish)." << std::endl;
+    std::cout << "Enter the contents of the JSON document (type END on a new line to finish):" << std::endl;
     std::string json;
     std::string line;
     while (std::getline(std::cin, line))
@@ -281,8 +297,8 @@ void createDocument()
         addCollection();
         getCollectionList(collectionList);
     }
-    std::cout << "Select a collection to store the file in." << std::endl;
-    std::cout << "Here are the current collections in our database:" << std::endl;
+    std::cout << "Select one of the following collections to insert document into.\n";
+    std::cout << "Here are the current collections in our database:\n\n";
 
     for (unsigned int i = 0; i < collectionList.size(); ++i)
     {
@@ -302,6 +318,133 @@ void createDocument()
     fout.close();
 
     std::cout << "JSON file created successfully and stored in collection: " << collectionChoice << std::endl;
+}
+void updateDocument()
+{
+    std::string collectionName;
+    std::string fileName;
+    std::string pathToFileName;
+    std::string line;
+    std::vector<std::string> collectionList;
+    std::vector<std::string> filesInCollection;
+
+    std::cout << "First, we must locate the document to update.\n";
+    getCollectionList(collectionList);
+    if (collectionList.size() == 0)
+    {
+        std::cout << "No collections found. Please create a collection and document first.\n\n";
+        return;
+    }
+    else
+    {
+        std::cout << "Here are all the available collections: \n";
+        for (unsigned int i = 0; i < collectionList.size(); i++)
+        {
+            std::cout << collectionList.at(i) << " ";
+        }
+        std::cout << "\n\n";
+
+        std::cout << "Enter the collection that the document is stored in: ";
+        std::cin >> collectionName;
+
+        std::cout << "Here are a list of files under that collection:\n";
+        getFileList(filesInCollection, collectionName);
+
+        std::cout << "Select a file to view/update: ";
+        std::cin >> fileName;
+
+        pathToFileName = "./db/" + collectionName + "/" + fileName + ".json";
+        std::ifstream file(pathToFileName);
+        if (!file)
+        {
+            std::cout << "Error opening file\n";
+        }
+
+        while (getline(file, line))
+        {
+            std::cout << line << std::endl;
+        }
+        std::cout << "Enter the new text for the document (type END on a new line to finish): \n";
+        std::string json;
+        std::string input_line;
+        while (std::getline(std::cin, input_line))
+        {
+            if (input_line == "END")
+            {
+                break;
+            }
+            if (!json.empty())
+            {
+                json += '\n';
+            }
+            json += input_line;
+        }
+        std::cout << "\n\n";
+        std::ofstream fout(pathToFileName);
+        fout << json;
+        fout.close();
+    }
+}
+
+void searchParameter() {
+    std::string collectionName;
+    std::string fileName;
+    std::string pathToFileName;
+    std::string line;
+    std::vector<std::string> collectionList;
+    std::vector<std::string> filesInCollection;
+    std::string parameter;
+
+    std::cout << "First, we must locate the document to update.\n";
+    getCollectionList(collectionList);
+    if (collectionList.size() == 0)
+    {
+        std::cout << "No collections found. Please create a collection and document first.\n\n";
+        return;
+    }
+    
+    std::cout << "Here are all the available collections: \n";
+    for (unsigned int i = 0; i < collectionList.size(); i++)
+    {
+        std::cout << collectionList.at(i) << " ";
+    }
+    std::cout << "\n\n";
+
+    std::cout << "Enter the collection that the document is stored in: ";
+    std::cin >> collectionName;
+
+    std::cout << "Here are a list of files under that collection:\n";
+    getFileList(filesInCollection, collectionName);
+
+    std::cout << "Select a file to search: ";
+    std::cin >> fileName;
+    pathToFileName = "./db/" + collectionName + "/" + fileName + ".json";
+    std::ifstream file(pathToFileName);
+    if (!file)
+    {
+        std::cout << "Error opening file\n";
+    }
+
+    std::cout << "\n\n";
+
+    std::cout << "Enter parameter you would like to search for: ";
+    std::cin >> parameter;
+    handleSearchRequest(parameter, pathToFileName);
+}
+
+void handleSearchRequest(const std::string& parameter, const std::string& pathToFile){
+    std::ifstream ifs(pathToFile);
+
+    json j = json::parse(ifs);
+
+    if(!j.contains(parameter)) {
+        std::cout << "Could not find this paramter in this file!" << std::endl;
+        std::cout << "\n\n";
+        return;
+    }
+    std::cout << "FOUND!" <<std::endl;
+    std::cout << parameter << ": "  << j[parameter] << std::endl;
+    std::cout << "\n\n";
 }
 
 void viewCurrCollectAndFiles() 
