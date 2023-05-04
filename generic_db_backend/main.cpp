@@ -6,6 +6,7 @@
 #include <vector>
 #include <filesystem>
 #include <algorithm>
+#include <sstream>
 #include "nlohmann/json.hpp"
 
 using json = nlohmann::json;
@@ -22,8 +23,7 @@ void getFileList(std::vector<std::string> &fileList, const std::string &collecti
 void searchDatabase();
 void updateDocument();
 void searchParameter();
-void handleSearchRequest(const std::string &, const std::string &);
-
+void handleSearchRequest(const std::string&, const std::vector<std::string>&, const std::string&);
 void viewCurrCollectAndFiles();
 
 int main()
@@ -421,7 +421,7 @@ void searchParameter()
     std::cout << "Enter the collection that the document is stored in: ";
     std::cin >> collectionName;
 
-    std::cout << "Here are a list of files under that collection:\n\n";
+    std::cout << "Here are a list of files under that collection:\n";
     getFileList(filesInCollection, collectionName);
 
     std::cout << "Select a file to search (without the quotation marks included): ";
@@ -435,25 +435,37 @@ void searchParameter()
 
     std::cout << "\n\n";
 
-    std::cout << "Enter parameter you would like to search for: ";
+    std::cout << "Enter parameter you would like to search for: (ex. employee.name)" << std::endl;
     std::cin >> parameter;
-    handleSearchRequest(parameter, pathToFileName);
+    std::vector<std::string> paramList;
+
+    std::istringstream iss(parameter);
+    std::string substring;
+    while(std::getline(iss, substring, '.')) {
+        paramList.push_back(substring);
+    }
+
+    handleSearchRequest(parameter, paramList, pathToFileName);
 }
 
-void handleSearchRequest(const std::string &parameter, const std::string &pathToFile)
-{
+void handleSearchRequest(const std::string& param, const std::vector<std::string>& paramList, const std::string& pathToFile){
     std::ifstream ifs(pathToFile);
 
     json j = json::parse(ifs);
-
-    if (!j.contains(parameter))
-    {
-        std::cout << "Could not find this paramter in this file!" << std::endl;
-        std::cout << "\n\n";
-        return;
+    
+    for (int i = 0; i < paramList.size(); ++i) {
+        if(j.contains(paramList.at(i))) {
+            j = j[paramList.at(i)];
+        }
+        else {
+            std::cout << "could not find parameter" << std::endl;
+            return;
+        }
     }
+
+    std::cout << "\n\n";
     std::cout << "FOUND!" << std::endl;
-    std::cout << parameter << ": " << j[parameter] << std::endl;
+    std::cout << param << ": " << j << std::endl;
     std::cout << "\n\n";
 }
 
