@@ -101,7 +101,7 @@ void addDocument()
      * 2 ways to add: (if already in program --> can just upload name of file), 
      * or add actual pathway to file on computer
     */ 
-    std::cout << "Enter a file path to add to database" << std::endl;
+    std::cout << "Enter a file path to add to database. " << std::endl;
     std::string filepath;
     std::cin >> filepath;
 
@@ -466,9 +466,6 @@ void viewCurrCollectAndFiles()
 {
     std::vector<std::string> collectionList; 
     getCollectionList(collectionList);
-
-    // std::vector<std::string> filesInCollection;
-    // getFileList(filesInCollection, collectionName);
 
     if (collectionList.size() != 0) // when there are collections that exist
     {
