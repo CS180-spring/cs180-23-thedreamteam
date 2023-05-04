@@ -22,7 +22,7 @@ void getFileList(std::vector<std::string> &fileList, const std::string &collecti
 void searchDatabase();
 void updateDocument();
 void searchParameter();
-void handleSearchRequest(const std::string&, const std::string&);
+void handleSearchRequest(const std::string &, const std::string &);
 
 void viewCurrCollectAndFiles();
 
@@ -34,7 +34,7 @@ int main()
 
     while (displayMenu)
     {
-        std::cout << "** GenericDB **" << std::endl;
+        std::cout << "\n** GenericDB **" << std::endl;
         std::cout << "Choose from the following operations:" << std::endl;
         std::cout << "1. Add a document to the database" << std::endl;
         std::cout << "2. Delete a document from the database" << std::endl;
@@ -70,7 +70,7 @@ int main()
         case (6):
             createDocument();
             break;
-        case(7):
+        case (7):
             updateDocument();
             break;
         case (8):
@@ -97,6 +97,10 @@ void addDocument()
         addCollection();
     }
 
+    /**
+     * 2 ways to add: (if already in program --> can just upload name of file), 
+     * or add actual pathway to file on computer
+    */ 
     std::cout << "Enter a file path to add to database" << std::endl;
     std::string filepath;
     std::cin >> filepath;
@@ -213,6 +217,7 @@ void getFileList(std::vector<std::string> &fileList, const std::string &collecti
 void printFileContent(const std::string fileName)
 {
 }
+
 /**
  * Search database for contents given file and collection name
  * 1. Display all existing collections to chose from
@@ -239,10 +244,10 @@ void searchDatabase()
     std::cout << "Enter a name of the collection searching for: ";
     std::cin >> collectionName;
 
-    std::cout << "Here are a list of files under that collection: ";
+    std::cout << "Here are a list of files under that collection: \n";
     getFileList(filesInCollection, collectionName);
 
-    std::cout << "Select a file to view: ";
+    std::cout << "\nSelect a file to view (without the quotation marks): ";
     std::cin >> fileName;
 
     //\generic_db_backend\db\searchFile\test.json
@@ -253,7 +258,7 @@ void searchDatabase()
     // file.open(pathToFileName, std::fstream::in);
     if (!file)
     {
-        std::cout << "Error opening file\n";
+        std::cout << "Error opening file. Check again if there are any contents in the file, if the file exists, or if it's a json file.\n";
     }
 
     while (getline(file, line))
@@ -263,6 +268,7 @@ void searchDatabase()
 
     file.close();
 }
+
 void createDocument()
 {
     std::string filename;
@@ -284,7 +290,7 @@ void createDocument()
         json += line;
     }
 
-    std::cout << "Enter a filename for the JSON file: ";
+    std::cout << "\nEnter a filename for the JSON file: ";
     std::cin >> filename;
     filename = filename + ".json";
 
@@ -297,7 +303,7 @@ void createDocument()
         addCollection();
         getCollectionList(collectionList);
     }
-    std::cout << "Select one of the following collections to insert document into.\n";
+    std::cout << "\nSelect one of the following collections to insert document into.\n";
     std::cout << "Here are the current collections in our database:\n\n";
 
     for (unsigned int i = 0; i < collectionList.size(); ++i)
@@ -319,6 +325,7 @@ void createDocument()
 
     std::cout << "JSON file created successfully and stored in collection: " << collectionChoice << std::endl;
 }
+
 void updateDocument()
 {
     std::string collectionName;
@@ -386,7 +393,8 @@ void updateDocument()
     }
 }
 
-void searchParameter() {
+void searchParameter()
+{
     std::string collectionName;
     std::string fileName;
     std::string pathToFileName;
@@ -402,7 +410,7 @@ void searchParameter() {
         std::cout << "No collections found. Please create a collection and document first.\n\n";
         return;
     }
-    
+
     std::cout << "Here are all the available collections: \n";
     for (unsigned int i = 0; i < collectionList.size(); i++)
     {
@@ -413,10 +421,10 @@ void searchParameter() {
     std::cout << "Enter the collection that the document is stored in: ";
     std::cin >> collectionName;
 
-    std::cout << "Here are a list of files under that collection:\n";
+    std::cout << "Here are a list of files under that collection:\n\n";
     getFileList(filesInCollection, collectionName);
 
-    std::cout << "Select a file to search: ";
+    std::cout << "Select a file to search (without the quotation marks included): ";
     std::cin >> fileName;
     pathToFileName = "./db/" + collectionName + "/" + fileName + ".json";
     std::ifstream file(pathToFileName);
@@ -432,37 +440,54 @@ void searchParameter() {
     handleSearchRequest(parameter, pathToFileName);
 }
 
-void handleSearchRequest(const std::string& parameter, const std::string& pathToFile){
+void handleSearchRequest(const std::string &parameter, const std::string &pathToFile)
+{
     std::ifstream ifs(pathToFile);
 
     json j = json::parse(ifs);
 
-    if(!j.contains(parameter)) {
+    if (!j.contains(parameter))
+    {
         std::cout << "Could not find this paramter in this file!" << std::endl;
         std::cout << "\n\n";
         return;
     }
-    std::cout << "FOUND!" <<std::endl;
-    std::cout << parameter << ": "  << j[parameter] << std::endl;
+    std::cout << "FOUND!" << std::endl;
+    std::cout << parameter << ": " << j[parameter] << std::endl;
     std::cout << "\n\n";
 }
 
-void viewCurrCollectAndFiles() 
+/**
+ * function that displays all the current collections 
+ * also displays any files that resides within those collections
+ * if no collections exist --> an error will occur
+*/
+void viewCurrCollectAndFiles()
 {
-    std::vector<std::string> collectionList;
+    std::vector<std::string> collectionList; 
     getCollectionList(collectionList);
 
-    if (collectionList.size() == 0) 
+    // std::vector<std::string> filesInCollection;
+    // getFileList(filesInCollection, collectionName);
+
+    if (collectionList.size() != 0) // when there are collections that exist
     {
         std::cout << "Here are the current collections and files that reside within them: " << std::endl;
 
-        // outputs all existing collections separated by a newline 
+        // outputs all existing collections separated by a newline
         for (unsigned int i = 0; i < collectionList.size(); ++i)
         {
-            std::cout << collectionList.at(i) << std::endl;
+            std::vector<std::string> filesInCurrCollection; 
+
+            std::cout << "Collection Name: " << collectionList.at(i) << std::endl;
+
+            std::cout << "Files in " << collectionList.at(i) << ": ";
+            getFileList(filesInCurrCollection, collectionList.at(i)); 
+
+            std::cout << "\n\n";
         }
     }
-    else // executes when there's no collections or files 
+    else // executes when there's no collections or files
     {
         std::cout << "There are currently no existing collections or files." << std::endl;
         std::cout << "Please create some collections and files before trying this option again!" << std::endl;
