@@ -23,7 +23,7 @@ void getFileList(std::vector<std::string> &fileList, const std::string &collecti
 void searchDatabase();
 void updateDocument();
 void searchParameter();
-void handleSearchRequest(const std::string&, const std::vector<std::string>&, const std::string&);
+void handleSearchRequest(const std::string &, const std::vector<std::string> &, const std::string &);
 void viewCurrCollectAndFiles();
 
 int main()
@@ -98,34 +98,44 @@ void addDocument()
     }
 
     /**
-     * 2 ways to add: (if already in program --> can just upload name of file), 
+     * 2 ways to add: (if already in program --> can just upload name of file),
      * or add actual pathway to file on computer
-    */ 
-    std::cout << "Enter a file path to add to database. " << std::endl;
+     */
+    std::cout << "Enter a file path to add to database: ";
     std::string filepath;
     std::cin >> filepath;
 
+    std::cout << "\nThe file name or path that you've entered: ";
     std::cout << filepath << std::endl;
-    std::ifstream inputfile(filepath);
 
-    std::string collectionChoice;
-
-    std::cout << "Select one of the following collections to insert document into." << std::endl;
-    for (unsigned int i = 0; i < collectionList.size(); ++i)
+    // checking for correct file extension (.json)
+    if (filepath.find(".json") != std::string::npos)
     {
-        std::cout << collectionList.at(i) << " ";
+        std::ifstream inputfile(filepath);
+
+        std::string collectionChoice;
+
+        std::cout << "Select one of the following collections to insert document into." << std::endl;
+        for (unsigned int i = 0; i < collectionList.size(); ++i)
+        {
+            std::cout << collectionList.at(i) << " ";
+        }
+        std::cout << "\n\n";
+        std::cin >> collectionChoice;
+
+        // std::cout << file.is_open() << std::endl;
+        std::string filename = get_file_name(filepath);
+        std::ofstream fout("./db/" + collectionChoice + "/" + filename);
+
+        std::string line;
+        while (getline(inputfile, line))
+        {
+            fout << line << std::endl;
+        }
     }
-    std::cout << "\n\n";
-    std::cin >> collectionChoice;
-
-    // std::cout << file.is_open() << std::endl;
-    std::string filename = get_file_name(filepath);
-    std::ofstream fout("./db/" + collectionChoice + "/" + filename);
-
-    std::string line;
-    while (getline(inputfile, line))
+    else 
     {
-        fout << line << std::endl;
+        std::cout << "\nThat was not a JSON file! Please upload JSON files only with the .json extension included." << std::endl;
     }
 }
 
@@ -244,7 +254,7 @@ void searchDatabase()
     std::cout << "Enter a name of the collection searching for: ";
     std::cin >> collectionName;
 
-    std::cout << "Here are a list of files under that collection: \n";
+    std::cout << "Here are a list of files under that collection: \n\n";
     getFileList(filesInCollection, collectionName);
 
     std::cout << "\nSelect a file to view (without the quotation marks): ";
@@ -303,7 +313,7 @@ void createDocument()
         addCollection();
         getCollectionList(collectionList);
     }
-    std::cout << "\nSelect one of the following collections to insert document into.\n";
+    std::cout << "\n\nSelect one of the following collections to insert document into.\n";
     std::cout << "Here are the current collections in our database:\n\n";
 
     for (unsigned int i = 0; i < collectionList.size(); ++i)
@@ -441,23 +451,28 @@ void searchParameter()
 
     std::istringstream iss(parameter);
     std::string substring;
-    while(std::getline(iss, substring, '.')) {
+    while (std::getline(iss, substring, '.'))
+    {
         paramList.push_back(substring);
     }
 
     handleSearchRequest(parameter, paramList, pathToFileName);
 }
 
-void handleSearchRequest(const std::string& param, const std::vector<std::string>& paramList, const std::string& pathToFile){
+void handleSearchRequest(const std::string &param, const std::vector<std::string> &paramList, const std::string &pathToFile)
+{
     std::ifstream ifs(pathToFile);
 
     json j = json::parse(ifs);
-    
-    for (int i = 0; i < paramList.size(); ++i) {
-        if(j.contains(paramList.at(i))) {
+
+    for (int i = 0; i < paramList.size(); ++i)
+    {
+        if (j.contains(paramList.at(i)))
+        {
             j = j[paramList.at(i)];
         }
-        else {
+        else
+        {
             std::cout << "could not find parameter" << std::endl;
             return;
         }
@@ -470,13 +485,13 @@ void handleSearchRequest(const std::string& param, const std::vector<std::string
 }
 
 /**
- * function that displays all the current collections 
+ * function that displays all the current collections
  * also displays any files that resides within those collections
  * if no collections exist --> an error will occur
-*/
+ */
 void viewCurrCollectAndFiles()
 {
-    std::vector<std::string> collectionList; 
+    std::vector<std::string> collectionList;
     getCollectionList(collectionList);
 
     if (collectionList.size() != 0) // when there are collections that exist
@@ -486,12 +501,12 @@ void viewCurrCollectAndFiles()
         // outputs all existing collections separated by a newline
         for (unsigned int i = 0; i < collectionList.size(); ++i)
         {
-            std::vector<std::string> filesInCurrCollection; 
+            std::vector<std::string> filesInCurrCollection;
 
             std::cout << "Collection Name: " << collectionList.at(i) << std::endl;
 
             std::cout << "Files in " << collectionList.at(i) << ": ";
-            getFileList(filesInCurrCollection, collectionList.at(i)); 
+            getFileList(filesInCurrCollection, collectionList.at(i));
 
             std::cout << "\n\n";
         }
