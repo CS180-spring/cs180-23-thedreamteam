@@ -7,6 +7,7 @@
 #include <filesystem>
 #include <algorithm>
 #include <sstream>
+#include <cctype>
 #include "nlohmann/json.hpp"
 
 using json = nlohmann::json;
@@ -16,14 +17,16 @@ void addDocument();
 void deleteDocument();
 void createDocument();
 void addCollection();
-
 void getCollectionList(std::vector<std::string> &collectionList);
 std::string get_file_name(const std::string &file_path);
 void getFileList(std::vector<std::string> &fileList, const std::string &collectionName);
 void searchDatabase();
 void updateDocument();
 void searchParameter();
-void handleSearchRequest(const std::string&, const std::vector<std::string>&, const std::string&);
+void handleSearchRequest(const std::string& param, const std::vector<std::string>& paramList, json& j);
+void printCollections(const std::vector<std::string>& colList);
+std::vector<std::string> convertToParamList(std::string param);
+
 
 int main()
 {
@@ -77,6 +80,7 @@ int main()
         default:
             std::cout << "Unrecognized choice. Try again and input another number." << std::endl
                       << std::endl;
+            std::cin >> option;
             break;
         }
     }
@@ -182,6 +186,7 @@ std::string get_file_name(const std::string &file_path)
 
 /*
 Populates pass by reference vector with list of all collections in the database.
+References ChatGPT on how to loop through a directory and retreive file names.
 */
 void getCollectionList(std::vector<std::string> &collectionList)
 {
@@ -195,6 +200,10 @@ void getCollectionList(std::vector<std::string> &collectionList)
     }
 }
 
+/*
+Populates pass by reference vector with list of all files in a given collection.
+References ChatGPT on how to loop through a directory and retreive file names.
+*/
 void getFileList(std::vector<std::string> &fileList, const std::string &collectionName)
 {
     //  generic_db_backend\db\searchFile
@@ -258,6 +267,7 @@ void searchDatabase()
 
     file.close();
 }
+
 void createDocument()
 {
     std::string filename;
@@ -390,7 +400,7 @@ void searchParameter() {
     std::vector<std::string> filesInCollection;
     std::string parameter;
 
-    std::cout << "First, we must locate the document to update.\n";
+    std::cout << "First, we must locate the document to search.\n";
     getCollectionList(collectionList);
     if (collectionList.size() == 0)
     {
@@ -399,11 +409,7 @@ void searchParameter() {
     }
     
     std::cout << "Here are all the available collections: \n";
-    for (unsigned int i = 0; i < collectionList.size(); i++)
-    {
-        std::cout << collectionList.at(i) << " ";
-    }
-    std::cout << "\n\n";
+    printCollections(collectionList);
 
     std::cout << "Enter the collection that the document is stored in: ";
     std::cin >> collectionName;
@@ -418,41 +424,84 @@ void searchParameter() {
     if (!file)
     {
         std::cout << "Error opening file\n";
+        return;
     }
 
     std::cout << "\n\n";
 
     std::cout << "Enter parameter you would like to search for: (ex. employee.name)" << std::endl;
     std::cin >> parameter;
-    std::vector<std::string> paramList;
+    std::vector<std::string> paramList = convertToParamList(parameter);
 
-    std::istringstream iss(parameter);
-    std::string substring;
-    while(std::getline(iss, substring, '.')) {
-        paramList.push_back(substring);
-    }
-
-    handleSearchRequest(parameter, paramList, pathToFileName);
-}
-
-void handleSearchRequest(const std::string& param, const std::vector<std::string>& paramList, const std::string& pathToFile){
-    std::ifstream ifs(pathToFile);
+    // json jsonArgument;
+    // jsonArgument = handleSearchRequest(parameter, paramList, pathToFileName);
+    
+    //if jsonArgument is NULL, that means that the handleSearchRequest could not find the parameter within the JSON File.
+    // if(jsonArgument == NULL) {
+    //     std::cout << "Could not find this parameter within this JSON file" << std::endl;
+    //     return;
+    // }
+    // else {
+    //     std::cout << jsonArgument << std::endl;
+    //     std::cout << "\n\n";
+    // }
+    std::ifstream ifs(pathToFileName);
 
     json j = json::parse(ifs);
-    
-    for (int i = 0; i < paramList.size(); ++i) {
-        if(j.contains(paramList.at(i))) {
-            j = j[paramList.at(i)];
+    handleSearchRequest(parameter, paramList, j);
+}
+
+void handleSearchRequest(const std::string& param, const std::vector<std::string>& paramList, json& j){
+    for(int i = 0; i < paramList.size(); ++i) {
+        if(j.is_object()) {
+            if(j.contains(paramList.at(i))){
+                j = j[paramList.at(i)];
+            }
+            else {
+                std::cout << "Could not find paramter within this JSON" << std::endl;
+                return;
+            }
+        }
+        else if (j.is_array()) {
+            char c = paramList.at(i)[0];
+            if(!isdigit(c)){
+                return;
+            }
+            int index = std::stoi(paramList.at(i));
+            if(index >= 0 && index < j.size()) {
+                j = j[index];
+            }
+            else {
+                std::cout << "Could not find this this parameter within this JSON" << std::endl;
+                return;
+            }
         }
         else {
-            std::cout << "could not find parameter" << std::endl;
+            std::cout << "Could not find this parameter within this JSON" << std::endl;
             return;
         }
     }
-
+    //prints json instance of where the search parameter is located.
+    std::cout << j << std::endl;
     std::cout << "\n\n";
-    std::cout << "FOUND!" <<std::endl;
-    std::cout << param << ": " << j << std::endl;
-    std::cout << "\n\n";
+    return;
+}
 
+
+void printCollections(const std::vector<std::string>& colList) {
+    for(int i =0; i<colList.size(); ++i) {
+        std::cout << colList.at(i) << " ";
+    }
+    std::cout << "\n\n";
+}
+
+std::vector<std::string> convertToParamList(std::string param) {
+    std::vector<std::string> paramList;
+    std::istringstream iss(param);
+    std::string substring;
+
+    while(std::getline(iss, substring, '.')) {
+        paramList.push_back(substring);
+    }
+    return paramList;
 }
