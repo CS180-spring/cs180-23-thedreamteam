@@ -80,7 +80,6 @@ int main()
         default:
             std::cout << "Unrecognized choice. Try again and input another number." << std::endl
                       << std::endl;
-            std::cin >> option;
             break;
         }
     }
@@ -433,18 +432,6 @@ void searchParameter() {
     std::cin >> parameter;
     std::vector<std::string> paramList = convertToParamList(parameter);
 
-    // json jsonArgument;
-    // jsonArgument = handleSearchRequest(parameter, paramList, pathToFileName);
-    
-    //if jsonArgument is NULL, that means that the handleSearchRequest could not find the parameter within the JSON File.
-    // if(jsonArgument == NULL) {
-    //     std::cout << "Could not find this parameter within this JSON file" << std::endl;
-    //     return;
-    // }
-    // else {
-    //     std::cout << jsonArgument << std::endl;
-    //     std::cout << "\n\n";
-    // }
     std::ifstream ifs(pathToFileName);
 
     json j = json::parse(ifs);
