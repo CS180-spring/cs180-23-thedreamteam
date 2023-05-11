@@ -8,6 +8,9 @@
 #include <algorithm>
 #include <sstream>
 #include "nlohmann/json.hpp"
+#include "rapidjson/document.h"
+#include "rapidjson/writer.h"
+#include "rapidjson/stringbuffer.h"
 
 using json = nlohmann::json;
 namespace fs = std::__fs::filesystem;
@@ -22,13 +25,13 @@ std::string get_file_name(const std::string &file_path);
 void getFileList(std::vector<std::string> &fileList, const std::string &collectionName);
 void searchDatabase();
 void updateDocument();
+void updateDocumentValue();
 void searchParameter();
 void viewCurrCollectAndFiles();
 void searchParameter();
-void handleSearchRequest(const std::string& param, const std::vector<std::string>& paramList, json& j);
-void printCollections(const std::vector<std::string>& colList);
+void handleSearchRequest(const std::string &param, const std::vector<std::string> &paramList, json &j);
+void printCollections(const std::vector<std::string> &colList);
 std::vector<std::string> convertToParamList(std::string param);
-
 
 int main()
 {
@@ -46,8 +49,9 @@ int main()
         std::cout << "4. Search for file in collection" << std::endl;
         std::cout << "5. Search for a specific parameter" << std::endl;
         std::cout << "6. Create a document" << std::endl;
-        std::cout << "7. Update a document" << std::endl;
-        std::cout << "8. View current collections and files" << std::endl;
+        std::cout << "7. Update a whole document" << std::endl;
+        std::cout << "8. Update a specific key/value pair" << std::endl;
+        std::cout << "9. View current collections and files" << std::endl;
         std::cout << "20. Exit" << std::endl;
         std::cout << "......................................." << std::endl;
         std::cout << "Enter option: ";
@@ -78,6 +82,9 @@ int main()
             updateDocument();
             break;
         case (8):
+            updateDocumentValue();
+            break;
+        case (9):
             viewCurrCollectAndFiles();
             break;
         case (20):
@@ -137,7 +144,7 @@ void addDocument()
             fout << line << std::endl;
         }
     }
-    else 
+    else
     {
         std::cout << "\nThat was not a JSON file! Please upload JSON files only with the .json extension included." << std::endl;
     }
@@ -371,7 +378,7 @@ void updateDocument()
         std::cout << "Here are a list of files under that collection:\n";
         getFileList(filesInCollection, collectionName);
 
-        std::cout << "Select a file to view/update: ";
+        std::cout << "\nSelect a file to view/update: ";
         std::cin >> fileName;
 
         pathToFileName = "./db/" + collectionName + "/" + fileName + ".json";
@@ -407,124 +414,215 @@ void updateDocument()
     }
 }
 
+void updateDocumentValue()
+{
+    std::string collectionName;
+    std::string fileName;
+    std::string line;
+    std::string pathToFileName;
+    std::vector<std::string> collectionList;
+    std::vector<std::string> filesInCollection;
 
+    std::cout << "First, we must locate the document to update.\n";
+    getCollectionList(collectionList);
+    if (collectionList.size() == 0)
+    {
+        std::cout << "No collections found. Please create a collection and document first.\n\n";
+        return;
+    }
+    else
+    {
+        std::cout << "Here are all the available collections: \n";
+        for (unsigned int i = 0; i < collectionList.size(); i++)
+        {
+            std::cout << collectionList.at(i) << " ";
+        }
+        std::cout << "\n\n";
 
-void searchParameter() {
-   std::string collectionName;
-   std::string fileName;
-   std::string pathToFileName;
-   std::string line;
-   std::vector<std::string> collectionList;
-   std::vector<std::string> filesInCollection;
-   std::string parameter;
+        std::cout << "Enter the collection that the document is stored in: ";
+        std::cin >> collectionName;
 
+        std::cout << "Here are a list of files under that collection:\n";
+        getFileList(filesInCollection, collectionName);
 
-   std::cout << "First, we must locate the document to search.\n";
-   getCollectionList(collectionList);
-   if (collectionList.size() == 0)
-   {
-       std::cout << "No collections found. Please create a collection and document first.\n\n";
-       return;
-   }
-  
-   std::cout << "Here are all the available collections: \n";
-   printCollections(collectionList);
+        std::cout << "\nSelect a file to view/update: ";
+        std::cin >> fileName;
 
+        pathToFileName = "./db/" + collectionName + "/" + fileName + ".json";
+        std::ifstream file(pathToFileName);
+        std::ifstream file2(pathToFileName);
+        if (!file || !file2)
+        {
+            std::cout << "Error opening file\n";
+            return;
+        }
 
-   std::cout << "Enter the collection that the document is stored in: ";
-   std::cin >> collectionName;
+        while (getline(file2, line))
+        {
+            std::cout << line << "\n\n";
+        }
+        file2.close();
+        std::string fileContents((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+        file.close();
+        rapidjson::Document document;
+        document.Parse(fileContents.c_str());
 
+        std::string key, updatedValue;
+        std::cout << "Enter the key to update: ";
+        std::cin >> key;
+        std::cout << "Enter the updated value: ";
+        std::cin >> updatedValue;
 
-   std::cout << "Here are a list of files under that collection:\n";
-   getFileList(filesInCollection, collectionName);
+        if (!document.HasMember(key.c_str()))
+        {
+            std::cout << "Key not found: " << key << std::endl;
+            return;
+        }
+        rapidjson::Value &jsonValue = document[key.c_str()];
+        if (!jsonValue.IsNull())
+        {
+            if (jsonValue.IsString())
+            {
+                jsonValue.SetString(updatedValue.c_str(), updatedValue.size(), document.GetAllocator());
+            }
+            else if (jsonValue.IsInt())
+            {
+                jsonValue.SetInt(std::stoi(updatedValue));
+            }
+        }
 
+        // Write the updated JSON to the file
+        std::ofstream outputFile(pathToFileName);
+        if (!outputFile)
+        {
+            std::cout << "Error opening file for writing\n";
+            return;
+        }
+        rapidjson::StringBuffer buffer;
+        rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+        document.Accept(writer);
+        outputFile << buffer.GetString();
+        outputFile.close();
 
-   std::cout << "Select a file to search: ";
-   std::cin >> fileName;
-   pathToFileName = "./db/" + collectionName + "/" + fileName + ".json";
-   std::ifstream file(pathToFileName);
-   if (!file)
-   {
-       std::cout << "Error opening file\n";
-       return;
-   }
+        std::cout << "JSON file updated successfully.\n";
+    }
+}
+void searchParameter()
+{
+    std::string collectionName;
+    std::string fileName;
+    std::string pathToFileName;
+    std::string line;
+    std::vector<std::string> collectionList;
+    std::vector<std::string> filesInCollection;
+    std::string parameter;
 
+    std::cout << "First, we must locate the document to search.\n";
+    getCollectionList(collectionList);
+    if (collectionList.size() == 0)
+    {
+        std::cout << "No collections found. Please create a collection and document first.\n\n";
+        return;
+    }
 
-   std::cout << "\n\n";
+    std::cout << "Here are all the available collections: \n";
+    printCollections(collectionList);
 
+    std::cout << "Enter the collection that the document is stored in: ";
+    std::cin >> collectionName;
 
-   std::cout << "Enter parameter you would like to search for: (ex. employee.name)" << std::endl;
-   std::cin >> parameter;
-   std::vector<std::string> paramList = convertToParamList(parameter);
+    std::cout << "Here are a list of files under that collection:\n";
+    getFileList(filesInCollection, collectionName);
 
+    std::cout << "Select a file to search: ";
+    std::cin >> fileName;
+    pathToFileName = "./db/" + collectionName + "/" + fileName + ".json";
+    std::ifstream file(pathToFileName);
+    if (!file)
+    {
+        std::cout << "Error opening file\n";
+        return;
+    }
 
-   std::ifstream ifs(pathToFileName);
+    std::cout << "\n\n";
 
+    std::cout << "Enter parameter you would like to search for: (ex. employee.name)" << std::endl;
+    std::cin >> parameter;
+    std::vector<std::string> paramList = convertToParamList(parameter);
 
-   json j = json::parse(ifs);
-   handleSearchRequest(parameter, paramList, j);
+    std::ifstream ifs(pathToFileName);
+
+    json j = json::parse(ifs);
+    handleSearchRequest(parameter, paramList, j);
 }
 
-
-void handleSearchRequest(const std::string& param, const std::vector<std::string>& paramList, json& j){
-   for(int i = 0; i < paramList.size(); ++i) {
-       if(j.is_object()) {
-           if(j.contains(paramList.at(i))){
-               j = j[paramList.at(i)];
-           }
-           else {
-               std::cout << "Could not find paramter within this JSON" << std::endl;
-               return;
-           }
-       }
-       else if (j.is_array()) {
-           char c = paramList.at(i)[0];
-           if(!isdigit(c)){
-               return;
-           }
-           int index = std::stoi(paramList.at(i));
-           if(index >= 0 && index < j.size()) {
-               j = j[index];
-           }
-           else {
-               std::cout << "Could not find this this parameter within this JSON" << std::endl;
-               return;
-           }
-       }
-       else {
-           std::cout << "Could not find this parameter within this JSON" << std::endl;
-           return;
-       }
-   }
-   //prints json instance of where the search parameter is located.
-   std::cout << j << std::endl;
-   std::cout << "\n\n";
-   return;
+void handleSearchRequest(const std::string &param, const std::vector<std::string> &paramList, json &j)
+{
+    for (int i = 0; i < paramList.size(); ++i)
+    {
+        if (j.is_object())
+        {
+            if (j.contains(paramList.at(i)))
+            {
+                j = j[paramList.at(i)];
+            }
+            else
+            {
+                std::cout << "Could not find paramter within this JSON" << std::endl;
+                return;
+            }
+        }
+        else if (j.is_array())
+        {
+            char c = paramList.at(i)[0];
+            if (!isdigit(c))
+            {
+                return;
+            }
+            int index = std::stoi(paramList.at(i));
+            if (index >= 0 && index < j.size())
+            {
+                j = j[index];
+            }
+            else
+            {
+                std::cout << "Could not find this this parameter within this JSON" << std::endl;
+                return;
+            }
+        }
+        else
+        {
+            std::cout << "Could not find this parameter within this JSON" << std::endl;
+            return;
+        }
+    }
+    // prints json instance of where the search parameter is located.
+    std::cout << j << std::endl;
+    std::cout << "\n\n";
+    return;
 }
 
-
-
-
-void printCollections(const std::vector<std::string>& colList) {
-   for(int i =0; i<colList.size(); ++i) {
-       std::cout << colList.at(i) << " ";
-   }
-   std::cout << "\n\n";
+void printCollections(const std::vector<std::string> &colList)
+{
+    for (int i = 0; i < colList.size(); ++i)
+    {
+        std::cout << colList.at(i) << " ";
+    }
+    std::cout << "\n\n";
 }
 
+std::vector<std::string> convertToParamList(std::string param)
+{
+    std::vector<std::string> paramList;
+    std::istringstream iss(param);
+    std::string substring;
 
-std::vector<std::string> convertToParamList(std::string param) {
-   std::vector<std::string> paramList;
-   std::istringstream iss(param);
-   std::string substring;
-
-
-   while(std::getline(iss, substring, '.')) {
-       paramList.push_back(substring);
-   }
-   return paramList;
+    while (std::getline(iss, substring, '.'))
+    {
+        paramList.push_back(substring);
+    }
+    return paramList;
 }
-
 
 /**
  * function that displays all the current collections
