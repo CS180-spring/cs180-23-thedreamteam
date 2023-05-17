@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <sstream>
 #include "nlohmann/json.hpp"
+#include "colormod.h"
 
 using json = nlohmann::json;
 namespace fs = std::__fs::filesystem;
@@ -28,7 +29,10 @@ void searchParameter();
 void handleSearchRequest(const std::string& param, const std::vector<std::string>& paramList, json& j);
 void printCollections(const std::vector<std::string>& colList);
 std::vector<std::string> convertToParamList(std::string param);
-
+Color::Modifier green(Color::FG_GREEN);
+Color::Modifier magenta(Color::FG_MAGENTA);
+Color::Modifier yellow(Color::FG_YELLOW);
+Color::Modifier def(Color::FG_DEFAULT);
 
 int main()
 {
@@ -40,6 +44,7 @@ int main()
     {
         std::cout << "\n** GenericDB **" << std::endl;
         std::cout << "Choose from the following operations:" << std::endl;
+        std::cout << "......................................." << std::endl;
         std::cout << "1. Add a document to the database" << std::endl;
         std::cout << "2. Delete a document from the database" << std::endl;
         std::cout << "3. Create a collection" << std::endl;
@@ -139,13 +144,13 @@ void addDocument()
     }
     else 
     {
-        std::cout << "\nThat was not a JSON file! Please upload JSON files only with the .json extension included." << std::endl;
+        std::cout << yellow << "\nThat was not a JSON file! Please upload JSON files only with the .json extension included.\n\n" << def;
     }
 }
 
 void deleteDocument()
 {
-    std::cout << "Enter the file to delete from database (ex: [collectionname]/[filename])" << std::endl;
+    std::cout << "Enter the file to delete from database (ex: [" << green << "collectionname" << def << "]/[" << magenta << "filename" << def << "])" << std::endl;
     std::string filepath;
     std::cin >> filepath;
 
@@ -156,7 +161,9 @@ void deleteDocument()
     if (std::remove(file) != 0)
     {
         // If the file deletion fails, print an error message
-        std::perror("Error deleting file");
+        std::cout << yellow << "File could not be deleted!\n";
+        std::perror("Error");
+        std::cout << def;
     }
     else
     {
@@ -222,9 +229,16 @@ void getFileList(std::vector<std::string> &fileList, const std::string &collecti
 {
     //  generic_db_backend\db\searchFile
     std::string pathToCollection = "./db/" + collectionName;
-    for (auto &i : fs::directory_iterator(pathToCollection))
-    {
-        std::cout << i.path().filename() << std::endl;
+    try {
+        for (auto &i : fs::directory_iterator(pathToCollection))
+        {
+            std::cout << magenta << i.path().filename() << def << "  ";
+        }
+            std::cout << "\n";
+    }
+    catch (std::exception) {
+        std::cout << yellow << "Invalid collection name! The following query will fail!\n" << def;
+        return;
     }
 }
 
@@ -245,20 +259,22 @@ void searchDatabase()
     std::string pathToFileName;
     std::string line;
     std::vector<std::string> collectionList;
-    std::vector<std::string> filesInCollection;
+    std::vector<std::string> filesInCollection; 
 
     std::cout << "Here are all the available collections: ";
     getCollectionList(collectionList);
+    /*
     for (unsigned int i = 0; i < collectionList.size(); i++)
     {
-        std::cout << collectionList.at(i) << " ";
+        std::cout << green << collectionList.at(i) << "  ";
     }
-    std::cout << "\n\n";
-
+    std::cout << def << "\n\n";
+    */
+    printCollections(collectionList);
     std::cout << "Enter a name of the collection searching for: ";
     std::cin >> collectionName;
 
-    std::cout << "Here are a list of files under that collection: \n\n";
+    std::cout << "\nHere are a list of files under that collection: \n";
     getFileList(filesInCollection, collectionName);
 
     std::cout << "\nSelect a file to view (without the quotation marks): ";
@@ -272,7 +288,7 @@ void searchDatabase()
     // file.open(pathToFileName, std::fstream::in);
     if (!file)
     {
-        std::cout << "Error opening file. Check again if there are any contents in the file, if the file exists, or if it's a json file.\n";
+        std::cout << yellow << "Error opening file. Check again if there are any contents in the file, if the file exists, or if it's a json file.\n\n" << def;
     }
 
     while (getline(file, line))
@@ -322,9 +338,9 @@ void createDocument()
 
     for (unsigned int i = 0; i < collectionList.size(); ++i)
     {
-        std::cout << collectionList.at(i) << " ";
+        std::cout << green << collectionList.at(i) << " ";
     }
-    std::cout << "\n\n";
+    std::cout << def << "\n\n";
     while (1)
     {
         std::cin >> collectionChoice;
@@ -337,7 +353,7 @@ void createDocument()
     fout << json;
     fout.close();
 
-    std::cout << "JSON file created successfully and stored in collection: " << collectionChoice << std::endl;
+    std::cout << "\nJSON file created successfully and stored in collection: " << green << collectionChoice << def << std::endl;
 }
 
 void updateDocument()
@@ -359,11 +375,14 @@ void updateDocument()
     else
     {
         std::cout << "Here are all the available collections: \n";
+        /*
         for (unsigned int i = 0; i < collectionList.size(); i++)
         {
             std::cout << collectionList.at(i) << " ";
         }
         std::cout << "\n\n";
+        */
+        printCollections(collectionList);
 
         std::cout << "Enter the collection that the document is stored in: ";
         std::cin >> collectionName;
@@ -371,14 +390,17 @@ void updateDocument()
         std::cout << "Here are a list of files under that collection:\n";
         getFileList(filesInCollection, collectionName);
 
-        std::cout << "Select a file to view/update: ";
+        std::cout << "\nSelect a file to view/update: ";
         std::cin >> fileName;
 
         pathToFileName = "./db/" + collectionName + "/" + fileName + ".json";
         std::ifstream file(pathToFileName);
         if (!file)
         {
-            std::cout << "Error opening file\n";
+            std::cout << yellow << "Error opening file!\n";
+            std::perror("Error");
+            std::cout << def;
+            return;
         }
 
         while (getline(file, line))
@@ -400,7 +422,7 @@ void updateDocument()
             }
             json += input_line;
         }
-        std::cout << "\n\n";
+        std::cout << "\n";
         std::ofstream fout(pathToFileName);
         fout << json;
         fout.close();
@@ -439,18 +461,16 @@ void searchParameter() {
    getFileList(filesInCollection, collectionName);
 
 
-   std::cout << "Select a file to search: ";
+   std::cout << "\nSelect a file to search: ";
    std::cin >> fileName;
    pathToFileName = "./db/" + collectionName + "/" + fileName + ".json";
    std::ifstream file(pathToFileName);
    if (!file)
    {
-       std::cout << "Error opening file\n";
+       std::cout << yellow << "Error opening file!\n\n" << def;
        return;
    }
-
-
-   std::cout << "\n\n";
+   std::cout << "\n";
 
 
    std::cout << "Enter parameter you would like to search for: (ex. employee.name)" << std::endl;
@@ -473,7 +493,7 @@ void handleSearchRequest(const std::string& param, const std::vector<std::string
                j = j[paramList.at(i)];
            }
            else {
-               std::cout << "Could not find paramter within this JSON" << std::endl;
+               std::cout << yellow << "Could not find parameter within this JSON!" << def << std::endl;
                return;
            }
        }
@@ -487,18 +507,17 @@ void handleSearchRequest(const std::string& param, const std::vector<std::string
                j = j[index];
            }
            else {
-               std::cout << "Could not find this this parameter within this JSON" << std::endl;
+               std::cout << yellow << "Could not find this this parameter within this JSON!" << def << std::endl;
                return;
            }
        }
        else {
-           std::cout << "Could not find this parameter within this JSON" << std::endl;
+           std::cout << yellow << "Could not find this parameter within this JSON!" << def << std::endl;
            return;
        }
    }
    //prints json instance of where the search parameter is located.
-   std::cout << j << std::endl;
-   std::cout << "\n\n";
+   std::cout << j << "\n";
    return;
 }
 
@@ -507,9 +526,9 @@ void handleSearchRequest(const std::string& param, const std::vector<std::string
 
 void printCollections(const std::vector<std::string>& colList) {
    for(int i =0; i<colList.size(); ++i) {
-       std::cout << colList.at(i) << " ";
+       std::cout << green << colList.at(i) << "  ";
    }
-   std::cout << "\n\n";
+   std::cout << def << "\n\n";
 }
 
 
@@ -545,12 +564,12 @@ void viewCurrCollectAndFiles()
         {
             std::vector<std::string> filesInCurrCollection;
 
-            std::cout << "Collection Name: " << collectionList.at(i) << std::endl;
+            std::cout << "Collection Name: " << green << collectionList.at(i) << def << std::endl;
 
             std::cout << "Files in " << collectionList.at(i) << ": ";
             getFileList(filesInCurrCollection, collectionList.at(i));
 
-            std::cout << "\n\n";
+            std::cout << "\n";
         }
     }
     else // executes when there's no collections or files
