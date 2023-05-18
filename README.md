@@ -23,11 +23,16 @@ GenericDB has a **terminal console interface** that allows users to store and in
   
 - **Code behind our terminal user interface at the moment:**
 - Welcome Page
-<img width="451" alt="Screen Shot 2023-05-04 at 4 31 30 PM" src="![image](https://github.com/CS180-spring/cs180-23-thedreamteam/assets/66893422/6fc0a056-851d-4295-bdd2-f027410a2703)">
+<img width="487" alt="Screen Shot 2023-05-18 at 3 52 05 PM" src="https://github.com/CS180-spring/cs180-23-thedreamteam/assets/43308867/6cdc6c22-a6da-4681-a814-55397772358f">
+
+- User Menu
+<img width="457" alt="Screen Shot 2023-05-18 at 3 52 25 PM" src="https://github.com/CS180-spring/cs180-23-thedreamteam/assets/43308867/f4974411-957f-4516-bd73-996ed27cc76e">
+
 
 - **Our features:**
   - Feature 1: Ability to create, add, or delete documents. Can also update the documents.
   - Feature 2: Ability to search and filter documents in database.
-  - Feature 3: Query the database using JSON/SQL. Should include path query too.
+  - Feature 3: Query the database using JSON.
   - Feature 4: Ability to create directories and nest documents under those directories. 
   - Feature 5: Ability to view all existing files and collections in the database.
+  - Feature 6: Ability to view an entire file. 
