@@ -50,7 +50,7 @@ int main()
 
     std::cout << "Welcome to GenericDB" << std::endl;
     std::cout << "Our database offered a number of features to try!" << std::endl;
-    std::cout << "To try, press the 'enter' key to prompt the menu." << std::endl;
+    std::cout << "To try, press your 'enter' key to prompt the menu." << std::endl;
     std::cout << "From the menu, enter a number to access a feature." << std::endl;
     welcome = false;
 
@@ -82,8 +82,8 @@ int main()
         switch (option)
         {
         case (1):
-            std::cout << "Press a: to add a document" << std::endl;
-            std::cout << "Press b: to add a database" << std::endl;
+            std::cout << "Press your 'a' key: to add a document" << std::endl;
+            std::cout << "Press your 'b' key: to add a database" << std::endl;
             std::cin >> subChoice;
 
             // adds a document to the database
@@ -100,8 +100,8 @@ int main()
             deleteDocument();
             break;
         case (3):
-            std::cout << "Press a: to search the database" << std::endl;
-            std::cout << "Press b: to search a parameter in the database" << std::endl;
+            std::cout << "Press your 'a' key: to search the database" << std::endl;
+            std::cout << "Press your 'b' key: to search for a parameter in the database" << std::endl;
             std::cin >> subChoice;
 
             if (subChoice == "a")
@@ -115,8 +115,8 @@ int main()
 
             break;
         case (4):
-            std::cout << "Press a: to update a document" << std::endl;
-            std::cout << "Press b: to update a document value" << std::endl;
+            std::cout << "Press your 'a' key: to update a document" << std::endl;
+            std::cout << "Press your 'b' key: to update a document value" << std::endl;
             std::cin >> subChoice;
 
             if (subChoice == "a")
@@ -131,7 +131,6 @@ int main()
         case (5):
             createDocument();
             break;
-            ;
         case (6):
             viewCurrCollectAndFiles();
             break;
