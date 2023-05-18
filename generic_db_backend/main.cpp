@@ -82,8 +82,11 @@ int main()
         switch (option)
         {
         case (1):
+            std::cout << "What would you like to add to the database?" << std::endl;
+            std::cout << "......................................." << std::endl;
             std::cout << "Press your 'a' key: to add a document" << std::endl;
             std::cout << "Press your 'b' key: to add a database" << std::endl;
+            std::cout << "......................................." << std::endl;
             std::cin >> subChoice;
 
             // adds a document to the database
@@ -104,11 +107,12 @@ int main()
             std::cout << "Press your 'b' key: to search for a parameter in the database" << std::endl;
             std::cin >> subChoice;
 
+            // searches the database
             if (subChoice == "a")
             {
                 searchDatabase();
             }
-            else if (subChoice == "b")
+            else if (subChoice == "b") // searches for a specific thing in the database
             {
                 searchParameter();
             }
@@ -119,11 +123,12 @@ int main()
             std::cout << "Press your 'b' key: to update a document value" << std::endl;
             std::cin >> subChoice;
 
+            // updates entire document
             if (subChoice == "a")
             {
                 updateDocument();
             }
-            else if (subChoice == "b")
+            else if (subChoice == "b") // updates a document val
             {
                 updateDocumentValue();
             }
@@ -149,51 +154,71 @@ void addDocument()
 {
     std::vector<std::string> collectionList;
     getCollectionList(collectionList);
-    if (collectionList.size() == 0)
+
+    // checks if any collections exist
+    if (collectionList.size() == 0) // when no collection exists
     {
-        std::cout << "No collections found. Must insert a document into a collection." << std::endl;
-        addCollection();
+        std::cout << yellow << "\nNo collections found. Please add a collection to the databasefirst before adding any documents" << def << "\n\n";
     }
-
-    /**
-     * 2 ways to add: (if already in program --> can just upload name of file),
-     * or add actual pathway to file on computer
-     */
-    std::cout << "Enter a file path to add to database: ";
-    std::string filepath;
-    std::cin >> filepath;
-
-    std::cout << "\nThe file name or path that you've entered: ";
-    std::cout << filepath << std::endl;
-
-    // checking for correct file extension (.json)
-    if (filepath.find(".json") != std::string::npos)
+    else // when collection exists
     {
-        std::ifstream inputfile(filepath);
+        /**
+         * 2 ways to add: (if already in program --> can just upload name of file),
+         * or add actual pathway to file on computer
+         */
+        std::cout << "\nEnter a file path to add to database: ";
+        std::string filepath;
+        std::cin >> filepath;
 
-        std::string collectionChoice;
-
-        std::cout << "Select one of the following collections to insert document into." << std::endl;
-        for (unsigned int i = 0; i < collectionList.size(); ++i)
+        // checking for correct file extension (.json)
+        if (filepath.find(".json") != std::string::npos)
         {
-            std::cout << collectionList.at(i) << " ";
+            std::ifstream inputfile(filepath);
+
+            std::string collectionChoice;
+
+            std::cout << "......................................." << std::endl;
+            std::cout << "Select one of the following collections to insert document into."
+                      << "\n\n";
+            for (unsigned int i = 0; i < collectionList.size(); ++i)
+            {
+                std::cout << collectionList.at(i) << std::endl;
+            }
+            std::cout << "......................................." << std::endl;
+            std::cout << "\nThe collection name that you've entered: ";
+            std::cin >> collectionChoice;
+            std::cout << "\n\n";
+
+            // checks if user inputted collection name exists
+            bool collectionExists = false;
+            for (unsigned int i = 0; i < collectionList.size(); ++i)
+            {
+                if (collectionChoice == collectionList.at(i))
+                {
+                    collectionExists = true;
+                }
+            }
+
+            if (collectionExists)
+            {
+                std::string filename = get_file_name(filepath);
+                std::ofstream fout("./db/" + collectionChoice + "/" + filename);
+
+                std::string line;
+                while (getline(inputfile, line))
+                {
+                    fout << line << std::endl;
+                }
+            }
+            else
+            {
+                std::cout << yellow << "This collection does not exist. Please try again." << def << std::endl;
+            }
         }
-        std::cout << "\n\n";
-        std::cin >> collectionChoice;
-
-        // std::cout << file.is_open() << std::endl;
-        std::string filename = get_file_name(filepath);
-        std::ofstream fout("./db/" + collectionChoice + "/" + filename);
-
-        std::string line;
-        while (getline(inputfile, line))
+        else
         {
-            fout << line << std::endl;
+            std::cout << yellow << "\nThat was not a JSON file! Please upload JSON files only with the .json extension included." << def << std::endl;
         }
-    }
-    else
-    {
-        std::cout << yellow << "\nThat was not a JSON file! Please upload JSON files only with the .json extension included." << def << std::endl;
     }
 }
 
@@ -285,10 +310,6 @@ void getFileList(std::vector<std::string> &fileList, const std::string &collecti
         std::cout << magenta << i.path().filename() << " ";
     }
     std::cout << def << std::endl;
-}
-
-void printFileContent(const std::string fileName)
-{
 }
 
 /**
