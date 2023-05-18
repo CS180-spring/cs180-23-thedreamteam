@@ -13,7 +13,7 @@
 #include "rapidjson/stringbuffer.h"
 
 using json = nlohmann::json;
-namespace fs = std::__fs::filesystem;
+namespace fs = std::filesystem;
 
 void addDocument();
 void deleteDocument();
@@ -38,20 +38,35 @@ int main()
     int option;
 
     bool displayMenu = true;
+    bool welcome = true; 
+    std::string subChoice; 
+    bool isEnterPressed = false;
 
-    while (displayMenu)
+    std::cout << "Welcome to GenericDB" << std::endl;
+    std::cout << "Our database offered a number of features to try!" << std::endl; 
+    std::cout << "To try, press 'enter' to prompt the menu" << std::endl; 
+    std:: cout << "From the menu, enter a number to access a feature" << std::endl;
+    welcome = false; 
+
+        
+
+    std::string line;
+    std::getline(std::cin, line);
+
+    if (line.empty())
+        isEnterPressed = true;
+
+     
+    while (isEnterPressed && displayMenu)
     {
         std::cout << "\n** GenericDB **" << std::endl;
         std::cout << "Choose from the following operations:" << std::endl;
-        std::cout << "1. Add a document to the database" << std::endl;
+        std::cout << "1. Add a document or collection to the database" << std::endl;
         std::cout << "2. Delete a document from the database" << std::endl;
-        std::cout << "3. Create a collection" << std::endl;
-        std::cout << "4. Search for file in collection" << std::endl;
-        std::cout << "5. Search for a specific parameter" << std::endl;
-        std::cout << "6. Create a document" << std::endl;
-        std::cout << "7. Update a whole document" << std::endl;
-        std::cout << "8. Update a specific key/value pair" << std::endl;
-        std::cout << "9. View current collections and files" << std::endl;
+        std::cout << "3. Search the database or collection" << std::endl;
+        std::cout << "4. Update a document or value" << std::endl;
+        std::cout << "5. Create a document" << std::endl;
+        std::cout << "6. View current collections and files" << std::endl;
         std::cout << "20. Exit" << std::endl;
         std::cout << "......................................." << std::endl;
         std::cout << "Enter option: ";
@@ -61,30 +76,56 @@ int main()
         switch (option)
         {
         case (1):
-            addDocument();
+            std::cout << "Press a: to add a document" << std::endl;
+            std::cout << "Press b: to add a database" << std::endl;
+            std::cin >> subChoice; 
+
+            if (subChoice == "a")
+            {    addDocument();
+            }
+            else if (subChoice == "b") 
+            {
+                addCollection();
+            }
+
             break;
         case (2):
             deleteDocument();
             break;
         case (3):
-            addCollection();
+            std::cout << "Press a: to search the database" << std::endl;
+            std::cout << "Press b: to search a parameter in the database" << std::endl;
+            std::cin >> subChoice; 
+
+            if (subChoice == "a")
+            {    
+                searchDatabase();
+            }
+            else if (subChoice == "b") 
+            {
+                searchParameter();
+            }
+            
             break;
         case (4):
-            searchDatabase();
+            std::cout << "Press a: to update a document" << std::endl;
+            std::cout << "Press b: to update a document value" << std::endl;
+            std::cin >> subChoice; 
+
+            if (subChoice == "a")
+            {    
+                updateDocument();
+            }
+            else if (subChoice == "b") 
+            {
+                updateDocumentValue();
+            }
             break;
         case (5):
-            searchParameter();
-            break;
-        case (6):
             createDocument();
             break;
-        case (7):
-            updateDocument();
-            break;
-        case (8):
-            updateDocumentValue();
-            break;
-        case (9):
+        ;
+        case (6):
             viewCurrCollectAndFiles();
             break;
         case (20):
