@@ -352,8 +352,7 @@ void searchDatabase()
     // file.open(pathToFileName, std::fstream::in);
     if (!file)
     {
-        std::cout << yellow << "Error opening file. Check again if there are any contents in the file, if the file exists, or if it's a json file.\n"
-                  << def;
+        std::cout << yellow << "Error opening file. Check again if there are any contents in the file, if the file exists, or if it's a json file.\n" << def;
     }
 
     while (getline(file, line))
@@ -394,8 +393,7 @@ void createDocument()
 
     if (collectionList.size() == 0)
     {
-        std::cout << yellow << "No collections found. Please create a collection first.\n"
-                  << def;
+        std::cout << yellow << "No collections found. Please create a collection first.\n" << def;
         addCollection();
         getCollectionList(collectionList);
     }
@@ -419,7 +417,7 @@ void createDocument()
     fout << json;
     fout.close();
 
-    std::cout << "JSON file created successfully and stored in collection: " << green << collectionChoice << std::endl;
+    std::cout << "JSON file created successfully and stored in collection: " << green << collectionChoice << def << std::endl;
 }
 
 void updateDocument()
