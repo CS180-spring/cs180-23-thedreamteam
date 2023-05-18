@@ -44,25 +44,24 @@ int main()
     int option;
 
     bool displayMenu = true;
-    bool welcome = true; 
-    std::string subChoice; 
+    bool welcome = true;
+    std::string subChoice;
     bool isEnterPressed = false;
 
     std::cout << "Welcome to GenericDB" << std::endl;
-    std::cout << "Our database offered a number of features to try!" << std::endl; 
-    std::cout << "To try, press 'enter' to prompt the menu" << std::endl; 
-    std:: cout << "From the menu, enter a number to access a feature" << std::endl;
-    welcome = false; 
-
-        
+    std::cout << "Our database offered a number of features to try!" << std::endl;
+    std::cout << "To try, press the 'enter' key to prompt the menu." << std::endl;
+    std::cout << "From the menu, enter a number to access a feature." << std::endl;
+    welcome = false;
 
     std::string line;
     std::getline(std::cin, line);
 
     if (line.empty())
+    {
         isEnterPressed = true;
+    }
 
-     
     while (isEnterPressed && displayMenu)
     {
         std::cout << "\n** GenericDB **" << std::endl;
@@ -85,16 +84,17 @@ int main()
         case (1):
             std::cout << "Press a: to add a document" << std::endl;
             std::cout << "Press b: to add a database" << std::endl;
-            std::cin >> subChoice; 
+            std::cin >> subChoice;
 
+            // adds a document to the database
             if (subChoice == "a")
-            {    addDocument();
+            {
+                addDocument();
             }
-            else if (subChoice == "b") 
+            else if (subChoice == "b") // adds a collection to the database
             {
                 addCollection();
             }
-
             break;
         case (2):
             deleteDocument();
@@ -102,28 +102,28 @@ int main()
         case (3):
             std::cout << "Press a: to search the database" << std::endl;
             std::cout << "Press b: to search a parameter in the database" << std::endl;
-            std::cin >> subChoice; 
+            std::cin >> subChoice;
 
             if (subChoice == "a")
-            {    
+            {
                 searchDatabase();
             }
-            else if (subChoice == "b") 
+            else if (subChoice == "b")
             {
                 searchParameter();
             }
-            
+
             break;
         case (4):
             std::cout << "Press a: to update a document" << std::endl;
             std::cout << "Press b: to update a document value" << std::endl;
-            std::cin >> subChoice; 
+            std::cin >> subChoice;
 
             if (subChoice == "a")
-            {    
+            {
                 updateDocument();
             }
-            else if (subChoice == "b") 
+            else if (subChoice == "b")
             {
                 updateDocumentValue();
             }
@@ -131,7 +131,7 @@ int main()
         case (5):
             createDocument();
             break;
-        ;
+            ;
         case (6):
             viewCurrCollectAndFiles();
             break;
@@ -332,7 +332,8 @@ void searchDatabase()
     // file.open(pathToFileName, std::fstream::in);
     if (!file)
     {
-        std::cout << yellow << "Error opening file. Check again if there are any contents in the file, if the file exists, or if it's a json file.\n" << def;
+        std::cout << yellow << "Error opening file. Check again if there are any contents in the file, if the file exists, or if it's a json file.\n"
+                  << def;
     }
 
     while (getline(file, line))
@@ -373,7 +374,8 @@ void createDocument()
 
     if (collectionList.size() == 0)
     {
-        std::cout << yellow << "No collections found. Please create a collection first.\n" << def;
+        std::cout << yellow << "No collections found. Please create a collection first.\n"
+                  << def;
         addCollection();
         getCollectionList(collectionList);
     }
@@ -413,7 +415,8 @@ void updateDocument()
     getCollectionList(collectionList);
     if (collectionList.size() == 0)
     {
-        std::cout << yellow << "No collections found. Please create a collection and document first.\n\n" << def;
+        std::cout << yellow << "No collections found. Please create a collection and document first.\n\n"
+                  << def;
         return;
     }
     else
@@ -438,7 +441,8 @@ void updateDocument()
         std::ifstream file(pathToFileName);
         if (!file)
         {
-            std::cout << yellow << "Error opening file\n" << def;
+            std::cout << yellow << "Error opening file\n"
+                      << def;
         }
 
         while (getline(file, line))
@@ -469,131 +473,122 @@ void updateDocument()
 
 void updateDocumentValue()
 {
-   std::string collectionName;
-   std::string fileName;
-   std::string line;
-   std::string pathToFileName;
-   std::vector<std::string> collectionList;
-   std::vector<std::string> filesInCollection;
+    std::string collectionName;
+    std::string fileName;
+    std::string line;
+    std::string pathToFileName;
+    std::vector<std::string> collectionList;
+    std::vector<std::string> filesInCollection;
 
+    std::cout << "First, we must locate the document to update.\n";
+    getCollectionList(collectionList);
+    if (collectionList.empty())
+    {
+        std::cout << yellow << "No collections found. Please create a collection and document first.\n\n"
+                  << def;
+        return;
+    }
+    else
+    {
+        std::cout << "Here are all the available collections: \n";
+        for (const std::string &collection : collectionList)
+        {
+            std::cout << green << collection << " ";
+        }
+        std::cout << def << "\n\n";
 
-   std::cout << "First, we must locate the document to update.\n";
-   getCollectionList(collectionList);
-   if (collectionList.empty())
-   {
-       std::cout << yellow << "No collections found. Please create a collection and document first.\n\n" << def;
-       return;
-   }
-   else
-   {
-       std::cout << "Here are all the available collections: \n";
-       for (const std::string& collection : collectionList)
-       {
-           std::cout << green << collection << " ";
-       }
-       std::cout << def << "\n\n";
+        std::cout << "Enter the collection that the document is stored in: ";
+        std::cin >> collectionName;
 
+        std::cout << "Here are a list of files under that collection:\n";
+        getFileList(filesInCollection, collectionName);
 
-       std::cout << "Enter the collection that the document is stored in: ";
-       std::cin >> collectionName;
+        std::cout << "\nSelect a file to view/update: ";
+        std::cin >> fileName;
 
+        pathToFileName = "./db/" + collectionName + "/" + fileName + ".json";
+        std::ifstream file(pathToFileName);
+        std::ifstream file2(pathToFileName);
+        if (!file || !file2)
+        {
+            std::cout << yellow << "Error opening file\n"
+                      << def;
+            return;
+        }
 
-       std::cout << "Here are a list of files under that collection:\n";
-       getFileList(filesInCollection, collectionName);
+        while (getline(file2, line))
+        {
+            std::cout << line << "\n\n";
+        }
+        file2.close();
+        std::string fileContents((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+        file.close();
+        rapidjson::Document document;
+        document.Parse(fileContents.c_str());
 
+        std::string key, updatedValue;
+        std::cout << "Enter the key to update: ";
+        std::cin >> key;
+        std::cout << "Enter the updated value: ";
+        std::cin >> updatedValue;
 
-       std::cout << "\nSelect a file to view/update: ";
-       std::cin >> fileName;
+        // Split the key into its component parts
+        std::vector<std::string> keys = convertToParamList(key);
 
+        rapidjson::Value *jsonValue = &document;
+        // CHATGPT referenced
+        //  Traverse the object to find the nested value
+        for (const std::string &subKey : keys)
+        {
+            if (jsonValue->IsArray()) // check if it's an array
+            {
+                size_t index = std::stoi(subKey);
+                if (index < jsonValue->Size()) // check if the index is valid
+                {
+                    jsonValue = &((*jsonValue)[index]);
+                }
+                else
+                {
+                    std::cout << yellow << "Index out of bounds: " << key << def << std::endl;
+                    return;
+                }
+            }
+            else if (jsonValue->IsObject() && jsonValue->HasMember(subKey.c_str()))
+            {
+                jsonValue = &((*jsonValue)[subKey.c_str()]);
+            }
+            else
+            {
+                std::cout << yellow << "Key not found: " << key << def << std::endl;
+                return;
+            }
+        }
 
-       pathToFileName = "./db/" + collectionName + "/" + fileName + ".json";
-       std::ifstream file(pathToFileName);
-       std::ifstream file2(pathToFileName);
-       if (!file || !file2)
-       {
-           std::cout << yellow << "Error opening file\n" << def;
-           return;
-       }
+        if (jsonValue->IsString())
+        {
+            jsonValue->SetString(updatedValue.c_str(), updatedValue.size(), document.GetAllocator());
+        }
+        else if (jsonValue->IsInt())
+        {
+            jsonValue->SetInt(std::stoi(updatedValue));
+        }
 
+        // Write the updated JSON to the file
+        std::ofstream outputFile(pathToFileName);
+        if (!outputFile)
+        {
+            std::cout << yellow << "Error opening file for writing\n"
+                      << def;
+            return;
+        }
+        rapidjson::StringBuffer buffer;
+        rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+        document.Accept(writer);
+        outputFile << buffer.GetString();
+        outputFile.close();
 
-       while (getline(file2, line))
-       {
-           std::cout << line << "\n\n";
-       }
-       file2.close();
-       std::string fileContents((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
-       file.close();
-       rapidjson::Document document;
-       document.Parse(fileContents.c_str());
-
-
-       std::string key, updatedValue;
-       std::cout << "Enter the key to update: ";
-       std::cin >> key;
-       std::cout << "Enter the updated value: ";
-       std::cin >> updatedValue;
-
-
-       // Split the key into its component parts
-       std::vector<std::string> keys = convertToParamList(key);
-
-
-       rapidjson::Value* jsonValue = &document;
-       //CHATGPT referenced
-       // Traverse the object to find the nested value
-       for (const std::string& subKey : keys)
-       {
-           if (jsonValue->IsArray()) // check if it's an array
-           {
-               size_t index = std::stoi(subKey);
-               if (index < jsonValue->Size()) // check if the index is valid
-               {
-                   jsonValue = &((*jsonValue)[index]);
-               }
-               else
-               {
-                   std::cout << yellow << "Index out of bounds: " << key << def << std::endl;
-                   return;
-               }
-           }
-           else if (jsonValue->IsObject() && jsonValue->HasMember(subKey.c_str()))
-           {
-               jsonValue = &((*jsonValue)[subKey.c_str()]);
-           }
-           else
-           {
-               std::cout << yellow << "Key not found: " << key << def << std::endl;
-               return;
-           }
-       }
-
-
-       if (jsonValue->IsString())
-       {
-           jsonValue->SetString(updatedValue.c_str(), updatedValue.size(), document.GetAllocator());
-       }
-       else if (jsonValue->IsInt())
-       {
-           jsonValue->SetInt(std::stoi(updatedValue));
-       }
-
-
-       // Write the updated JSON to the file
-       std::ofstream outputFile(pathToFileName);
-       if (!outputFile)
-       {
-           std::cout << yellow << "Error opening file for writing\n" << def;
-           return;
-       }
-       rapidjson::StringBuffer buffer;
-       rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
-       document.Accept(writer);
-       outputFile << buffer.GetString();
-       outputFile.close();
-
-
-       std::cout << "JSON file updated successfully.\n";
-   }
+        std::cout << "JSON file updated successfully.\n";
+    }
 }
 
 void searchParameter()
@@ -610,7 +605,8 @@ void searchParameter()
     getCollectionList(collectionList);
     if (collectionList.size() == 0)
     {
-        std::cout << yellow << "No collections found. Please create a collection and document first.\n\n" << def;
+        std::cout << yellow << "No collections found. Please create a collection and document first.\n\n"
+                  << def;
         return;
     }
 
@@ -629,7 +625,8 @@ void searchParameter()
     std::ifstream file(pathToFileName);
     if (!file)
     {
-        std::cout << yellow << "Error opening file\n" << def;
+        std::cout << yellow << "Error opening file\n"
+                  << def;
         return;
     }
 
