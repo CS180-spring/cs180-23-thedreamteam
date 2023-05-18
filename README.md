@@ -15,13 +15,15 @@ GenericDB has a **terminal console interface** that allows users to store and in
 
 ## 💡 Features
 - **How users use the system:**
+  - Users are prompted with a welcome message instructing them on how to navigate through the program. After reading the message, user may hit "enter" to see the menu. 
   - Users are greeted with a menu of options of what they can do to the database. From there, they can input the number correlating to what they want to do in the database.
   - For example, they can just input the number "1" to add a document to the database. 
   - The program may then ask follow up questions to succesfully accomplish the task the user asked for. 
   - The program continuously loops with a menu of options of what the user can do to the database. The program terminates when the user quits the program by inputting the number "20" into the program.
   
 - **Code behind our terminal user interface at the moment:**
-<img width="451" alt="Screen Shot 2023-05-04 at 4 31 30 PM" src="https://user-images.githubusercontent.com/43308867/236351348-3507ba88-540a-4ab2-bd43-dc8bfc8abd5c.png">
+- Welcome Page
+<img width="451" alt="Screen Shot 2023-05-04 at 4 31 30 PM" src="![image](https://github.com/CS180-spring/cs180-23-thedreamteam/assets/66893422/6fc0a056-851d-4295-bdd2-f027410a2703)">
 
 - **Our features:**
   - Feature 1: Ability to create, add, or delete documents. Can also update the documents.
