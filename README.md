@@ -12,6 +12,7 @@ GenericDB has a **terminal console interface** that allows users to store and in
 
 ## 🛠️ Technologies
 - **Languages**: C/C++
+- **Libraries**: nlohmann/json, RapidJSON
 
 ## 💡 Features
 - **How users use the system:**
