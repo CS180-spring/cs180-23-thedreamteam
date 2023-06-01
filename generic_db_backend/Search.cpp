@@ -1,5 +1,4 @@
 #include "Search.h"
-#include "Essential.h"
 
 #include <iostream>
 #include <fstream>
@@ -40,7 +39,7 @@ void searchKeywordInCollections(const std::string& keyword)
         fileList.clear();
 
         // Get the list of files in the collection
-        getFileList(fileList, collection);
+        searchGetFileList(fileList, collection);
 
         for (const auto& file : fileList)
         {
@@ -66,4 +65,18 @@ void searchKeywordInCollections(const std::string& keyword)
         }
     }
 }
+
+void searchGetFileList(std::vector<std::string>& fileList, const std::string& collectionName)
+{
+    fs::path path_to_collection("./db/" + collectionName);
+    for (const auto& entry : fs::directory_iterator(path_to_collection))
+    {
+        if (entry.is_regular_file() && entry.path().extension() == ".json")
+        {
+            fileList.push_back(entry.path().string());
+        }
+    }
+}
+
+
 
