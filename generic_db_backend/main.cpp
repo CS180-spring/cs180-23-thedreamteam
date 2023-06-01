@@ -25,13 +25,16 @@ namespace fs = std::filesystem;
 void deleteDocument();
 void createDocument();
 
+<<<<<<< HEAD
 void getCollectionList(std::vector<std::string> &collectionList);
 std::string get_file_name(const std::string &file_path);
+=======
+
+>>>>>>> 88ef216 (delete.cpp)
 
 void updateDocument();
 void updateDocumentValue();
 void searchParameter();
-void viewCurrCollectAndFiles();
 void searchParameter();
 void handleSearchRequest(const std::string &param, const std::vector<std::string> &paramList, json &j);
 
@@ -167,6 +170,7 @@ int main()
     }
 }
 
+<<<<<<< HEAD
 void deleteDocument()
 {
     std::cout << "Enter the file to delete from database (ex: ["
@@ -192,6 +196,8 @@ void deleteDocument()
         std::printf("File deleted successfully\n");
     }
 }
+=======
+>>>>>>> 88ef216 (delete.cpp)
 
 void createDocument()
 {

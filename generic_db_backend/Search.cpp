@@ -1,4 +1,5 @@
 #include "Search.h"
+#include "Essential.h"
 
 #include <iostream>
 #include <fstream>

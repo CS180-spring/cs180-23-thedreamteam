@@ -11,5 +11,6 @@ namespace fs = std::filesystem;
     // extern std::vector<std::string> foundFiles; 
 
     void viewDatabase();
+    void viewCurrCollectAndFiles()
 
 #endif

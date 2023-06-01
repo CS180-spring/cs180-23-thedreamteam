@@ -69,3 +69,38 @@ void viewDatabase()
 
     file.close();
 }
+
+
+/**
+ * function that displays all the current collections
+ * also displays any files that resides within those collections
+ * if no collections exist --> an error will occur
+ */
+void viewCurrCollectAndFiles()
+{
+    std::vector<std::string> collectionList;
+    getCollectionList(collectionList);
+
+    if (collectionList.size() != 0) // when there are collections that exist
+    {
+        std::cout << "Here are the current collections and files that reside within them: " << std::endl;
+
+        // outputs all existing collections separated by a newline
+        for (unsigned int i = 0; i < collectionList.size(); ++i)
+        {
+            std::vector<std::string> filesInCurrCollection;
+
+            std::cout << "Collection Name: "   << collectionList.at(i)<< std::endl;
+
+            std::cout << "Files in " << collectionList.at(i) << ": ";
+            getFileList(filesInCurrCollection, collectionList.at(i));
+
+            std::cout << "\n\n";
+        }
+    }
+    else // executes when there's no collections or files
+    {
+        std::cout   << "There are currently no existing collections or files." << std::endl;
+        std::cout   << "Please create some collections and files before trying this option again!"   << std::endl;
+    }
+}
