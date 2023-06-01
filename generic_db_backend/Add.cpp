@@ -1,4 +1,5 @@
-#include "Document.h"
+#include "Add.h"
+#include "Essential.h"
 
 #include <iostream>
 #include <fstream>
@@ -91,4 +92,30 @@ void addDocument()
             std::cout << yellow << "\nThat was not a JSON file! Please upload JSON files only with the .json extension included." << def << std::endl;
         }
     }
+}
+
+/*
+Allows user to add collections to the database (db) file.
+*/
+void addCollection()
+{
+    std::string collectionname;
+
+    std::cout << "Enter a name for the new collection: ";
+    std::cin >> collectionname;
+
+    std::string parent_directory_path = "./db";
+
+    std::string new_collection_path = parent_directory_path + "/" + collectionname;
+
+    if (mkdir(new_collection_path.c_str(), 0777) == -1)
+    {
+        std::cout << yellow << "Could not create directory\n";
+        std::cerr << "Error creating directory!\n";
+        std::cout << def;
+        exit(1);
+    }
+
+    std::cout << "Collection created successfully!" << std::endl
+              << std::endl;
 }

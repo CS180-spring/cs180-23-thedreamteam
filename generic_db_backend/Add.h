@@ -1,5 +1,5 @@
-#ifndef DOCUMENT_ADD_H
-#define DOCUMENT_ADD_H
+#ifndef ADD_H
+#define ADD_H
 
 void addDocument();
 void addCollection();
