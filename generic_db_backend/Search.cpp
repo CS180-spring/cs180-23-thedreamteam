@@ -73,10 +73,10 @@ void searchKeywordInCollections(const std::string& keyword)
     }
     if (!keywordResult.empty())
     {
-        std::cout << "Keyword found!" << std::endl;
+        std::cout << "\nKeyword found!" << std::endl;
         for (const auto& foundFile : keywordResult)
         {
-            std::cout << "Collection: " << foundFile.second << std::endl << "File: " << foundFile.first << std::endl;
+            std::cout << "Collection: " << foundFile.second << std::endl << std::endl << "File: " << foundFile.first << std::endl;
         }
     }
     else if (keywordResult.empty())
@@ -109,7 +109,7 @@ void searchParameter()
     std::vector<std::string> filesInCollection;
     std::string parameter;
 
-    std::cout << "First, we must locate the document to search.\n";
+    std::cout << "\nFirst, we must locate the document to search.\n";
     getCollectionList(collectionList);
     if (collectionList.size() == 0)
     {
@@ -117,16 +117,16 @@ void searchParameter()
         return;
     }
 
-    std::cout << "Here are all the available collections: \n";
+    std::cout << "\nHere are all the available collections: \n";
     printCollections(collectionList);
 
-    std::cout << "Enter the collection that the document is stored in: ";
+    std::cout << "\nEnter the collection that the document is stored in: ";
     std::cin >> collectionName;
 
     std::cout << "Here are a list of files under that collection:\n";
     getFileList(filesInCollection, collectionName);
 
-    std::cout << "Select a file to search: ";
+    std::cout << "Select a file to search (without the quotation marks): ";
     std::cin >> fileName;
     pathToFileName = "./db/" + collectionName + "/" + fileName + ".json";
     std::ifstream file(pathToFileName);

@@ -103,7 +103,7 @@ int main()
             }
             else 
             {
-                std::cout << "Please only enter the options indicated. Try again!" << std::endl;
+                std::cout << "\nPlease only enter the options indicated. Try again!" << std::endl;
             }
             break;
         case (2):
@@ -120,7 +120,7 @@ int main()
             // searches the database
             if (subChoice == "a")
             {
-                std::cout << "Enter keyword you would like to search for" << std::endl;
+                std::cout << "Enter keyword you would like to search for: ";
                 std::cin >> keyword;
                 searchKeywordInCollections(keyword);
             }
@@ -130,7 +130,7 @@ int main()
             }
             else 
             {
-                std::cout << "Please only enter the options indicated. Try again!" << std::endl;
+                std::cout << "\nPlease only enter the options indicated. Try again!" << std::endl;
             }
 
             break;
@@ -153,7 +153,7 @@ int main()
             }
             else 
             {
-                std::cout << "Please only enter the options indicated. Try again!" << std::endl;
+                std::cout << "\nPlease only enter the options indicated. Try again!" << std::endl;
             }
 
             break;
@@ -172,8 +172,7 @@ int main()
             displayMenu = false;
             break;
         default:
-            std::cout << "Unrecognized choice. Try again and input another number." << std::endl
-                      << std::endl;
+            std::cout << "Unrecognized choice. Try again and input another number." << std::endl << std::endl;
             break;
         }
     }
