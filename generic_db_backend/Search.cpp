@@ -17,6 +17,7 @@
 
 namespace fs = std::filesystem;
 std::vector<std::pair<std::string, std::string>> foundFiles;
+
 void searchKeywordInCollections(const std::string& keyword)
 {
     std::vector<std::string> collectionList;
