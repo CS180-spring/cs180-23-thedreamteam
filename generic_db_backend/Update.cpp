@@ -109,9 +109,8 @@ void updateDocumentValue()
         {
             std::cout << collection << " ";
         }
-        // std::cout   << "\n\n";
 
-        std::cout << "Enter the collection that the document is stored in: ";
+        std::cout << "\nEnter the collection that the document is stored in: ";
         std::cin >> collectionName;
 
         std::cout << "Here are a list of files under that collection:\n";
@@ -131,7 +130,7 @@ void updateDocumentValue()
 
         while (getline(file2, line))
         {
-            std::cout << line << "\n\n";
+            std::cout << line << "\n";
         }
         file2.close();
         std::string fileContents((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
