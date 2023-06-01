@@ -16,7 +16,7 @@
 #include "colormod.h"
 
 namespace fs = std::filesystem;
-
+std::vector<std::pair<std::string, std::string>> foundFiles;
 void searchKeywordInCollections(const std::string& keyword)
 {
     std::vector<std::string> collectionList;
@@ -57,13 +57,28 @@ void searchKeywordInCollections(const std::string& keyword)
                 }
             }
 
-            // display where file found 
             if (keywordFound)
             {
-                std::cout << "Keyword found in file: " << file << std::endl;
+                foundFiles.push_back(std::make_pair(file, collection));
+            }
+
+            
+        }
+        // display where file found 
+        
+    }
+    if (!foundFiles.empty())
+        {
+            std::cout << "Keyword found!" << std::endl;
+            for (const auto& foundFile : foundFiles)
+            {
+                std::cout << "Collection: " << foundFile.second << std::endl << "File: " << foundFile.first << std::endl;
             }
         }
-    }
+        else if (foundFiles.empty())
+        {
+            std::cout << "Keyword was not found in any file." << std::endl;
+        }
 }
 
 void searchGetFileList(std::vector<std::string>& fileList, const std::string& collectionName)
