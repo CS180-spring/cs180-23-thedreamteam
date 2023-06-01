@@ -15,6 +15,7 @@
 
 #include "Add.h"
 #include "Essential.h"
+#include "Search.h"
 
 using json = nlohmann::json;
 namespace fs = std::filesystem;
@@ -78,7 +79,8 @@ int main()
         std::cout << "5. Create a document" << std::endl;
         std::cout << "6. View current collections and files" << std::endl;
         std::cout << "7. Filter a document" << std::endl;
-        std::cout << "20. Exit" << std::endl;
+        std::cout << "8. View file in database" << std::endl; 
+        std::cout << "9. Exit" << std::endl;
         std::cout << "......................................." << std::endl;
         std::cout << "Enter option: ";
         std::cin >> option;
@@ -108,14 +110,14 @@ int main()
             deleteDocument();
             break;
         case (3):
-            std::cout << "Press your 'a' key: to search the database" << std::endl;
+            std::cout << "Press your 'a' key: to keyword in the database" << std::endl; //make this view database file 
             std::cout << "Press your 'b' key: to search for a parameter in the database" << std::endl;
             std::cin >> subChoice;
 
             // searches the database
             if (subChoice == "a")
             {
-                searchDatabase();
+                searchKeywordInCollections();
             }
             else if (subChoice == "b") // searches for a specific thing in the database
             {
@@ -147,7 +149,9 @@ int main()
         case (7):
             filter();
             break;
-        case (20):
+        case (8): 
+            searchDatabase(); 
+        case (9):
             displayMenu = false;
             break;
         default:
