@@ -4,7 +4,6 @@
 #include "View.h"
 #include "Delete.h"
 
-
 #include <iostream>
 #include <fstream>
 #include <cstdio>
@@ -20,18 +19,14 @@
 #include "rapidjson/stringbuffer.h"
 #include "colormod.h"
 
-
 using json = nlohmann::json;
 namespace fs = std::filesystem;
-
 
 void deleteDocument();
 void createDocument();
 
-
 void getCollectionList(std::vector<std::string> &collectionList);
 std::string get_file_name(const std::string &file_path);
-
 
 void updateDocument();
 void updateDocumentValue();
@@ -42,7 +37,7 @@ void handleSearchRequest(const std::string &param, const std::vector<std::string
 
 void filter();
 std::vector<std::string> convertToParamList(std::string param);
-std::string keyword; 
+std::string keyword;
 // Color::Modifier green(Color::FG_GREEN);
 // Color::Modifier magenta(Color::FG_MAGENTA);
 // Color::Modifier yellow(Color::FG_YELLOW);
@@ -83,7 +78,7 @@ int main()
         std::cout << "5. Create a document" << std::endl;
         std::cout << "6. View current collections and files" << std::endl;
         std::cout << "7. Filter a document" << std::endl;
-        std::cout << "8. View file in database" << std::endl; 
+        std::cout << "8. View file in database" << std::endl;
         std::cout << "9. Exit" << std::endl;
         std::cout << "......................................." << std::endl;
         std::cout << "Enter option: ";
@@ -115,7 +110,7 @@ int main()
             break;
         case (3):
             std::cout << "......................................." << std::endl;
-            std::cout << "Press your 'a' key: to search for a keyword in the database" << std::endl; //make this view database file 
+            std::cout << "Press your 'a' key: to search for a keyword in the database" << std::endl; // make this view database file
             std::cout << "Press your 'b' key: to search for a parameter in the database" << std::endl;
             std::cout << "......................................." << std::endl;
             std::cin >> subChoice;
@@ -123,9 +118,9 @@ int main()
             // searches the database
             if (subChoice == "a")
             {
-                std::cout << "Enter keyword you would like to search for" << std::endl; 
-                std::cin >> keyword;  
-                searchKeywordInCollections(keyword); 
+                std::cout << "Enter keyword you would like to search for" << std::endl;
+                std::cin >> keyword;
+                searchKeywordInCollections(keyword);
             }
             else if (subChoice == "b") // searches for a specific thing in the database
             {
@@ -159,8 +154,8 @@ int main()
         case (7):
             filter();
             break;
-        case (8): 
-            viewDatabase(); 
+        case (8):
+            viewDatabase();
         case (9):
             displayMenu = false;
             break;
@@ -174,7 +169,11 @@ int main()
 
 void deleteDocument()
 {
-    std::cout << "Enter the file to delete from database (ex: ["   << "collectionname"   << "]/["    << "filename"   << "])" << std::endl;
+    std::cout << "Enter the file to delete from database (ex: ["
+              << "collectionname"
+              << "]/["
+              << "filename"
+              << "])" << std::endl;
     std::string filepath;
     std::cin >> filepath;
 
@@ -185,7 +184,7 @@ void deleteDocument()
     if (std::remove(file) != 0)
     {
         // If the file deletion fails, print an error message
-        std::cout   << "File could not be deleted!\n";
+        std::cout << "File could not be deleted!\n";
         std::perror("Error deleting file");
     }
     else
@@ -193,7 +192,6 @@ void deleteDocument()
         std::printf("File deleted successfully\n");
     }
 }
-
 
 void createDocument()
 {
@@ -225,8 +223,7 @@ void createDocument()
 
     if (collectionList.size() == 0)
     {
-        std::cout   << "No collections found. Please create a collection first.\n"
-                   ;
+        std::cout << "No collections found. Please create a collection first.\n";
         addCollection();
         getCollectionList(collectionList);
     }
@@ -235,7 +232,7 @@ void createDocument()
 
     for (unsigned int i = 0; i < collectionList.size(); ++i)
     {
-        std::cout   << collectionList.at(i) << " ";
+        std::cout << collectionList.at(i) << " ";
     }
     while (1)
     {
@@ -249,10 +246,8 @@ void createDocument()
     fout << json;
     fout.close();
 
-    std::cout << "JSON file created successfully and stored in collection: "   << collectionChoice   << std::endl;
+    std::cout << "JSON file created successfully and stored in collection: " << collectionChoice << std::endl;
 }
-
-
 
 void updateDocument()
 {
@@ -267,8 +262,7 @@ void updateDocument()
     getCollectionList(collectionList);
     if (collectionList.size() == 0)
     {
-        std::cout   << "No collections found. Please create a collection and document first.\n\n"
-                  ;
+        std::cout << "No collections found. Please create a collection and document first.\n\n";
         return;
     }
     else
@@ -276,9 +270,9 @@ void updateDocument()
         std::cout << "Here are all the available collections: \n";
         for (unsigned int i = 0; i < collectionList.size(); i++)
         {
-            std::cout   << collectionList.at(i) << " ";
+            std::cout << collectionList.at(i) << " ";
         }
-        std::cout << std::endl; 
+        std::cout << std::endl;
         std::cout << "\n\n";
 
         std::cout << "Enter the collection that the document is stored in: ";
@@ -294,8 +288,7 @@ void updateDocument()
         std::ifstream file(pathToFileName);
         if (!file)
         {
-            std::cout   << "Error opening file\n"
-                       ;
+            std::cout << "Error opening file\n";
         }
 
         while (getline(file, line))
@@ -337,8 +330,7 @@ void updateDocumentValue()
     getCollectionList(collectionList);
     if (collectionList.empty())
     {
-        std::cout   << "No collections found. Please create a collection and document first.\n\n"
-                   ;
+        std::cout << "No collections found. Please create a collection and document first.\n\n";
         return;
     }
     else
@@ -346,7 +338,7 @@ void updateDocumentValue()
         std::cout << "Here are all the available collections: \n";
         for (const std::string &collection : collectionList)
         {
-            std::cout   << collection << " ";
+            std::cout << collection << " ";
         }
         // std::cout   << "\n\n";
 
@@ -364,8 +356,7 @@ void updateDocumentValue()
         std::ifstream file2(pathToFileName);
         if (!file || !file2)
         {
-            std::cout   << "Error opening file\n"
-                       ;
+            std::cout << "Error opening file\n";
             return;
         }
 
@@ -402,7 +393,7 @@ void updateDocumentValue()
                 }
                 else
                 {
-                    std::cout   << "Index out of bounds: " << key   << std::endl;
+                    std::cout << "Index out of bounds: " << key << std::endl;
                     return;
                 }
             }
@@ -412,7 +403,7 @@ void updateDocumentValue()
             }
             else
             {
-                std::cout   << "Key not found: " << key   << std::endl;
+                std::cout << "Key not found: " << key << std::endl;
                 return;
             }
         }
@@ -430,8 +421,7 @@ void updateDocumentValue()
         std::ofstream outputFile(pathToFileName);
         if (!outputFile)
         {
-            std::cout   << "Error opening file for writing\n"
-                       ;
+            std::cout << "Error opening file for writing\n";
             return;
         }
         rapidjson::StringBuffer buffer;
@@ -458,8 +448,7 @@ void searchParameter()
     getCollectionList(collectionList);
     if (collectionList.size() == 0)
     {
-        std::cout   << "No collections found. Please create a collection and document first.\n\n"
-                   ;
+        std::cout << "No collections found. Please create a collection and document first.\n\n";
         return;
     }
 
@@ -478,8 +467,7 @@ void searchParameter()
     std::ifstream file(pathToFileName);
     if (!file)
     {
-        std::cout   << "Error opening file\n"
-                   ;
+        std::cout << "Error opening file\n";
         return;
     }
 
@@ -507,7 +495,7 @@ void handleSearchRequest(const std::string &param, const std::vector<std::string
             }
             else
             {
-                std::cout   << "Could not find paramter within this JSON"   << std::endl;
+                std::cout << "Could not find paramter within this JSON" << std::endl;
                 return;
             }
         }
@@ -525,13 +513,13 @@ void handleSearchRequest(const std::string &param, const std::vector<std::string
             }
             else
             {
-                std::cout   << "Could not find this this parameter within this JSON"   << std::endl;
+                std::cout << "Could not find this this parameter within this JSON" << std::endl;
                 return;
             }
         }
         else
         {
-            std::cout   << "Could not find this parameter within this JSON"   << std::endl;
+            std::cout << "Could not find this parameter within this JSON" << std::endl;
             return;
         }
     }
@@ -540,9 +528,6 @@ void handleSearchRequest(const std::string &param, const std::vector<std::string
     std::cout << "\n\n";
     return;
 }
-
-
-
 
 void printFilteredValues(const json &jsonData, const std::string &keyPath)
 {
@@ -576,19 +561,17 @@ void filter()
 
     if (collectionList.empty())
     {
-        std::cout   << "No collections found. Please create a collection and document first.\n\n"
-                   ;
+        std::cout << "No collections found. Please create a collection and document first.\n\n";
         return;
     }
 
     std::cout << "Here are all the available collections:\n";
     for (const std::string &collection : collectionList)
     {
-        std::cout   << collection << " ";
+        std::cout << collection << " ";
     }
-    // std::cout   << "\n\n";
 
-    std::cout << "Enter the collection that the document is stored in: ";
+    std::cout << "\nEnter the collection that the document is stored in: ";
     std::cin >> collectionName;
 
     std::cout << "Here is a list of files under that collection:\n";
