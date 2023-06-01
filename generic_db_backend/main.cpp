@@ -252,6 +252,8 @@ void createDocument()
     std::cout << "JSON file created successfully and stored in collection: "   << collectionChoice   << std::endl;
 }
 
+
+
 void updateDocument()
 {
     std::string collectionName;
