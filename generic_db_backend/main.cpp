@@ -67,7 +67,7 @@ int main()
     while (isEnterPressed && displayMenu)
     {
         std::cout << "\n** GenericDB **" << std::endl;
-        std::cout << "......................................." << std::endl;
+        std::cout << "................................................." << std::endl;
         std::cout << "Choose from the following operations:" << std::endl;
         std::cout << "1. Add a document or collection to the database" << std::endl;
         std::cout << "2. Delete a document from the database" << std::endl;
@@ -78,7 +78,7 @@ int main()
         std::cout << "7. Filter a document" << std::endl;
         std::cout << "8. View file in database" << std::endl;
         std::cout << "9. Exit" << std::endl;
-        std::cout << "......................................." << std::endl;
+        std::cout << "................................................" << std::endl;
         std::cout << "Enter option: ";
         std::cin >> option;
         std::cout << "\n\n";
@@ -87,10 +87,11 @@ int main()
         {
         case (1):
             std::cout << "What would you like to add to the database?" << std::endl;
-            std::cout << "......................................." << std::endl;
+            std::cout << "......................................................." << std::endl;
             std::cout << "Press your 'a' key: to add a document to the database" << std::endl;
             std::cout << "Press your 'b' key: to add a collection to the database" << std::endl;
-            std::cout << "......................................." << std::endl;
+            std::cout << "......................................................." << std::endl;
+            std::cout << "Your Choice: ";
             std::cin >> subChoice;
 
             // adds a document to the database
@@ -102,15 +103,20 @@ int main()
             {
                 addCollection();
             }
+            else 
+            {
+                std::cout << "Please only enter the options indicated. Try again!" << std::endl;
+            }
             break;
         case (2):
             deleteDocument();
             break;
         case (3):
-            std::cout << "......................................." << std::endl;
+            std::cout << "............................................................." << std::endl;
             std::cout << "Press your 'a' key: to search for a keyword in the database" << std::endl; // make this view database file
             std::cout << "Press your 'b' key: to search for a parameter in the database" << std::endl;
-            std::cout << "......................................." << std::endl;
+            std::cout << "............................................................." << std::endl;
+            std::cout << "Your Choice: ";
             std::cin >> subChoice;
 
             // searches the database
@@ -124,13 +130,18 @@ int main()
             {
                 searchParameter();
             }
+            else 
+            {
+                std::cout << "Please only enter the options indicated. Try again!" << std::endl;
+            }
 
             break;
         case (4):
-            std::cout << "......................................." << std::endl;
+            std::cout << ".................................................." << std::endl;
             std::cout << "Press your 'a' key: to update a document" << std::endl;
             std::cout << "Press your 'b' key: to update a document value" << std::endl;
-            std::cout << "......................................." << std::endl;
+            std::cout << ".................................................." << std::endl;
+            std::cout << "Your Choice: "; 
             std::cin >> subChoice;
 
             // updates entire document
@@ -142,6 +153,11 @@ int main()
             {
                 updateDocumentValue();
             }
+            else 
+            {
+                std::cout << "Please only enter the options indicated. Try again!" << std::endl;
+            }
+
             break;
         case (5):
             createDocument();
@@ -221,8 +237,3 @@ void createDocument()
 
     std::cout << "JSON file created successfully and stored in collection: " << collectionChoice << std::endl;
 }
-
-
-
-
-
