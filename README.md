@@ -32,7 +32,7 @@ GenericDB has a **terminal console interface** that allows users to store and in
   
 ## 🖌️ Our User Interface
 - Welcome Page
-<img width="487" alt="Screen Shot 2023-05-18 at 3 52 05 PM" src="https://github.com/CS180-spring/cs180-23-thedreamteam/assets/43308867/6cdc6c22-a6da-4681-a814-55397772358f">
+<img width="392" alt="Screen Shot 2023-06-01 at 1 35 10 PM" src="https://github.com/CS180-spring/cs180-23-thedreamteam/assets/43308867/99567a75-d42a-4e67-b9e6-eb2fce3eaed5">
 
 - User Menu
-<img width="457" alt="Screen Shot 2023-05-18 at 3 52 25 PM" src="https://github.com/CS180-spring/cs180-23-thedreamteam/assets/43308867/f4974411-957f-4516-bd73-996ed27cc76e">
+<img width="385" alt="Screen Shot 2023-06-01 at 1 35 26 PM" src="https://github.com/CS180-spring/cs180-23-thedreamteam/assets/43308867/b230c9ff-d2e9-414b-bf16-1b97bbf9d2ce">
