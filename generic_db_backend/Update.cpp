@@ -117,7 +117,7 @@ void updateDocumentValue()
         std::cout << "Here are a list of files under that collection:\n";
         getFileList(filesInCollection, collectionName);
 
-        std::cout << "\nSelect a file to view/update: ";
+        std::cout << "\nSelect a file to view/update(no need to add extension): ";
         std::cin >> fileName;
 
         pathToFileName = "./db/" + collectionName + "/" + fileName + ".json";

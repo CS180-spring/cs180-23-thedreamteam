@@ -1,0 +1,14 @@
+{"phone": "123-456-222",  
+ "user": 
+    {
+      "lastname": "Doe",
+      "fruit": "Jane"
+    },
+"user2": 
+    {
+      "lastname": "Smith",
+      "firstname": "Jane"
+    },
+  "address": "123 Street Ave. ",  
+  "category": ["neighbors", "LA"]
+ }

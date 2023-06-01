@@ -126,7 +126,7 @@ void searchParameter()
     std::cout << "Here are a list of files under that collection:\n";
     getFileList(filesInCollection, collectionName);
 
-    std::cout << "Select a file to search (without the quotation marks): ";
+    std::cout << "Select a file to search (no need to enter file extension): ";
     std::cin >> fileName;
     pathToFileName = "./db/" + collectionName + "/" + fileName + ".json";
     std::ifstream file(pathToFileName);
