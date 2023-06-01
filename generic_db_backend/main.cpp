@@ -74,7 +74,7 @@ int main()
         std::cout << "5. Create a document" << std::endl;
         std::cout << "6. View current collections and files" << std::endl;
         std::cout << "7. Filter a document" << std::endl;
-        std::cout << "8. View file in database" << std::endl;
+        std::cout << "8. Read file in database" << std::endl;
         std::cout << "9. Exit" << std::endl;
         std::cout << "................................................" << std::endl;
         std::cout << "Enter option: ";
