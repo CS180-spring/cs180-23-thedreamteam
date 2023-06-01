@@ -14,13 +14,9 @@
 #include "rapidjson/document.h"
 #include "rapidjson/writer.h"
 #include "rapidjson/stringbuffer.h"
-#include "colormod.h"
 
-Color::Modifier green(Color::FG_GREEN);
-Color::Modifier magenta(Color::FG_MAGENTA);
-Color::Modifier yellow(Color::FG_YELLOW);
-Color::Modifier def(Color::FG_DEFAULT);
-
+using json = nlohmann::json;
+namespace fs = std::filesystem;
 
 void addDocument()
 {
@@ -30,7 +26,7 @@ void addDocument()
     // checks if any collections exist
     if (collectionList.size() == 0) // when no collection exists
     {
-        std::cout << yellow << "\nNo collections found. Please add a collection to the databasefirst before adding any documents" << def << "\n\n";
+        std::cout   << "\nNo collections found. Please add a collection to the databasefirst before adding any documents"   << "\n\n";
     }
     else // when collection exists
     {
@@ -84,12 +80,12 @@ void addDocument()
             }
             else
             {
-                std::cout << yellow << "This collection does not exist. Please try again." << def << std::endl;
+                std::cout   << "This collection does not exist. Please try again."   << std::endl;
             }
         }
         else
         {
-            std::cout << yellow << "\nThat was not a JSON file! Please upload JSON files only with the .json extension included." << def << std::endl;
+            std::cout   << "\nThat was not a JSON file! Please upload JSON files only with the .json extension included."   << std::endl;
         }
     }
 }
@@ -110,9 +106,9 @@ void addCollection()
 
     if (mkdir(new_collection_path.c_str(), 0777) == -1)
     {
-        std::cout << yellow << "Could not create directory\n";
+        std::cout   << "Could not create directory\n";
         std::cerr << "Error creating directory!\n";
-        std::cout << def;
+        std::cout  ;
         exit(1);
     }
 

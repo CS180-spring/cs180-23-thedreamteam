@@ -4,6 +4,8 @@
 #include "View.h"
 #include "Delete.h"
 #include "Update.h"
+#include "Create.h"
+#include "Filter.h"
 
 #include <iostream>
 #include <fstream>
@@ -18,22 +20,18 @@
 #include "rapidjson/document.h"
 #include "rapidjson/writer.h"
 #include "rapidjson/stringbuffer.h"
-#include "colormod.h"
+
 
 using json = nlohmann::json;
 namespace fs = std::filesystem;
 
-void createDocument();
+// void createDocument();
 
-void getCollectionList(std::vector<std::string> &collectionList);
-std::string get_file_name(const std::string &file_path);
-
-
+// void getCollectionList(std::vector<std::string> &collectionList);
+// std::string get_file_name(const std::string &file_path);
 
 
-void handleSearchRequest(const std::string &param, const std::vector<std::string> &paramList, json &j);
 
-void filter();
 std::vector<std::string> convertToParamList(std::string param);
 std::string keyword;
 // Color::Modifier green(Color::FG_GREEN);
@@ -181,6 +179,7 @@ int main()
     }
 }
 
+<<<<<<< HEAD
 
 void createDocument()
 {
@@ -237,3 +236,5 @@ void createDocument()
 
     std::cout << "JSON file created successfully and stored in collection: " << collectionChoice << std::endl;
 }
+=======
+>>>>>>> 8a1bc68 (fixed errors)

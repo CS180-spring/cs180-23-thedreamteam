@@ -14,10 +14,13 @@
 #include "rapidjson/document.h"
 #include "rapidjson/writer.h"
 #include "rapidjson/stringbuffer.h"
-#include "colormod.h"
 
+
+using json = nlohmann::json;
 namespace fs = std::filesystem;
+
 std::vector<std::pair<std::string, std::string>> keywordResult;
+
 void searchKeywordInCollections(const std::string& keyword)
 {
     std::vector<std::string> collectionList;

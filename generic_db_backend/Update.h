@@ -1,4 +1,4 @@
-#ifdef UPDATE_H
+#ifndef UPDATE_H
 #define UPDATE_H
 
 #include <iostream>
@@ -7,7 +7,6 @@
 #include <fstream>
 #include <filesystem>
 
-namespace fs = std::filesystem;
 
 void updateDocument();
 void updateDocumentValue();

@@ -14,12 +14,9 @@
 #include "rapidjson/document.h"
 #include "rapidjson/writer.h"
 #include "rapidjson/stringbuffer.h"
-#include "colormod.h"
 
-Color::Modifier green(Color::FG_GREEN);
-Color::Modifier magenta(Color::FG_MAGENTA);
-Color::Modifier yellow(Color::FG_YELLOW);
-Color::Modifier def(Color::FG_DEFAULT);
+using json = nlohmann::json;
+namespace fs = std::filesystem;
 
 void updateDocument()
 {

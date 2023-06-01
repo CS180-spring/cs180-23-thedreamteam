@@ -1,8 +1,5 @@
 #ifndef FILTER_H
-#define FILTER_h
-
-#include "Add.h"
-#include "Essential.h"
+#define FILTER_H
 
 #include <iostream>
 #include <fstream>
@@ -17,16 +14,14 @@
 #include "rapidjson/document.h"
 #include "rapidjson/writer.h"
 #include "rapidjson/stringbuffer.h"
-#include "colormod.h"
 
-Color::Modifier green(Color::FG_GREEN);
-Color::Modifier magenta(Color::FG_MAGENTA);
-Color::Modifier yellow(Color::FG_YELLOW);
-Color::Modifier def(Color::FG_DEFAULT);
+using json = nlohmann::json;
+namespace fs = std::filesystem;
 
-void filter(); 
-void printFilteredValues(const json &jsonData, const std::string &keyPath); 
+
+    void filter(); 
+    void printFilteredValues(const json &jsonData, const std::string &keyPath); 
+
+
 
 #endif 
-
-

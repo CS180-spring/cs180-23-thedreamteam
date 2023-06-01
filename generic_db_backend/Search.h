@@ -1,16 +1,26 @@
 #ifndef SEARCH_H
 #define SEARCH_H
 
-#include <iostream>
-#include <vector>
-#include <string>
-#include <fstream>
-#include <filesystem>
 
+#include <iostream>
+#include <fstream>
+#include <cstdio>
+#include <string>
+#include <sys/stat.h>
+#include <vector>
+#include <filesystem>
+#include <algorithm>
+#include <sstream>
+#include "nlohmann/json.hpp"
+#include "rapidjson/document.h"
+#include "rapidjson/writer.h"
+#include "rapidjson/stringbuffer.h"
+
+
+using json = nlohmann::json;
 namespace fs = std::filesystem;
 
 
-#include <string>
 
     void searchKeywordInCollections(const std::string& keyword); 
     void searchParameter();
