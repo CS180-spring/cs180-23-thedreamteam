@@ -26,7 +26,7 @@ void addDocument()
     // checks if any collections exist
     if (collectionList.size() == 0) // when no collection exists
     {
-        std::cout   << "\nNo collections found. Please add a collection to the databasefirst before adding any documents"   << "\n\n";
+        std::cout << "\nNo collections found. Please add a collection to the database first before adding any documents"   << "\n\n";
     }
     else // when collection exists
     {
@@ -45,14 +45,14 @@ void addDocument()
 
             std::string collectionChoice;
 
-            std::cout << "......................................." << std::endl;
+            std::cout << ".................................................................." << std::endl;
             std::cout << "Select one of the following collections to insert document into."
                       << "\n\n";
             for (unsigned int i = 0; i < collectionList.size(); ++i)
             {
                 std::cout << collectionList.at(i) << std::endl;
             }
-            std::cout << "......................................." << std::endl;
+            std::cout << ".............................................." << std::endl;
             std::cout << "\nThe collection name that you've entered: ";
             std::cin >> collectionChoice;
             std::cout << "\n\n";
@@ -80,12 +80,12 @@ void addDocument()
             }
             else
             {
-                std::cout   << "This collection does not exist. Please try again."   << std::endl;
+                std::cout << "This collection does not exist. Please try again."   << std::endl;
             }
         }
         else
         {
-            std::cout   << "\nThat was not a JSON file! Please upload JSON files only with the .json extension included."   << std::endl;
+            std::cout << "\nThat was not a JSON file! Please upload JSON files only with the .json extension included." << std::endl;
         }
     }
 }
@@ -106,12 +106,10 @@ void addCollection()
 
     if (mkdir(new_collection_path.c_str(), 0777) == -1)
     {
-        std::cout   << "Could not create directory\n";
+        std::cout << "Could not create directory\n";
         std::cerr << "Error creating directory!\n";
-        std::cout  ;
         exit(1);
     }
 
-    std::cout << "Collection created successfully!" << std::endl
-              << std::endl;
+    std::cout << "Collection created successfully!" << std::endl << std::endl;
 }
