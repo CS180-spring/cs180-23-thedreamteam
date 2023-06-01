@@ -96,3 +96,97 @@ void searchGetFileList(std::vector<std::string>& fileList, const std::string& co
 
 
 
+void searchParameter()
+{
+    std::string collectionName;
+    std::string fileName;
+    std::string pathToFileName;
+    std::string line;
+    std::vector<std::string> collectionList;
+    std::vector<std::string> filesInCollection;
+    std::string parameter;
+
+    std::cout << "First, we must locate the document to search.\n";
+    getCollectionList(collectionList);
+    if (collectionList.size() == 0)
+    {
+        std::cout << "No collections found. Please create a collection and document first.\n\n";
+        return;
+    }
+
+    std::cout << "Here are all the available collections: \n";
+    printCollections(collectionList);
+
+    std::cout << "Enter the collection that the document is stored in: ";
+    std::cin >> collectionName;
+
+    std::cout << "Here are a list of files under that collection:\n";
+    getFileList(filesInCollection, collectionName);
+
+    std::cout << "Select a file to search: ";
+    std::cin >> fileName;
+    pathToFileName = "./db/" + collectionName + "/" + fileName + ".json";
+    std::ifstream file(pathToFileName);
+    if (!file)
+    {
+        std::cout << "Error opening file\n";
+        return;
+    }
+
+    std::cout << "\n\n";
+
+    std::cout << "Enter parameter you would like to search for: (ex. employee.name)" << std::endl;
+    std::cin >> parameter;
+    std::vector<std::string> paramList = convertToParamList(parameter);
+
+    std::ifstream ifs(pathToFileName);
+
+    json j = json::parse(ifs);
+    handleSearchRequest(parameter, paramList, j);
+}
+
+void handleSearchRequest(const std::string &param, const std::vector<std::string> &paramList, json &j)
+{
+    for (int i = 0; i < paramList.size(); ++i)
+    {
+        if (j.is_object())
+        {
+            if (j.contains(paramList.at(i)))
+            {
+                j = j[paramList.at(i)];
+            }
+            else
+            {
+                std::cout << "Could not find paramter within this JSON" << std::endl;
+                return;
+            }
+        }
+        else if (j.is_array())
+        {
+            char c = paramList.at(i)[0];
+            if (!isdigit(c))
+            {
+                return;
+            }
+            int index = std::stoi(paramList.at(i));
+            if (index >= 0 && index < j.size())
+            {
+                j = j[index];
+            }
+            else
+            {
+                std::cout << "Could not find this this parameter within this JSON" << std::endl;
+                return;
+            }
+        }
+        else
+        {
+            std::cout << "Could not find this parameter within this JSON" << std::endl;
+            return;
+        }
+    }
+    // prints json instance of where the search parameter is located.
+    std::cout << j << std::endl;
+    std::cout << "\n\n";
+    return;
+}

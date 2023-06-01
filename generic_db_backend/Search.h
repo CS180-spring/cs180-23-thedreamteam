@@ -13,7 +13,8 @@ namespace fs = std::filesystem;
 #include <string>
 
     void searchKeywordInCollections(const std::string& keyword); 
-    
+    void searchParameter();
+    void handleSearchRequest(const std::string &param, const std::vector<std::string> &paramList, json &j); 
     void searchGetFileList(std::vector<std::string>& fileList, const std::string& collectionName); 
     // void getFileList(std::vector<std::string>& fileList, const std::string& collectionName); 
 #endif  // DOCUMENT_MANAGER_H

@@ -1,6 +1,6 @@
-#ifndef DOCUMENT_MANAGER_H
-#define DOCUMENT_MANAGER_H
+#ifndef DELETE_H
+#define DELETE_H
 
 void deleteDocument();
 
-#endif  // DOCUMENT_MANAGER_H
+#endif  // DELETE_H

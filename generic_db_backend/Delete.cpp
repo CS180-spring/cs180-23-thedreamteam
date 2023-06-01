@@ -18,7 +18,11 @@
 
 void deleteDocument()
 {
-    std::cout << "Enter the file to delete from database (ex: ["   << "collectionname"   << "]/["    << "filename"   << "])" << std::endl;
+    std::cout << "Enter the file to delete from database (ex: ["
+              << "collectionname"
+              << "]/["
+              << "filename"
+              << "])" << std::endl;
     std::string filepath;
     std::cin >> filepath;
 
@@ -29,7 +33,7 @@ void deleteDocument()
     if (std::remove(file) != 0)
     {
         // If the file deletion fails, print an error message
-        std::cout   << "File could not be deleted!\n";
+        std::cout << "File could not be deleted!\n";
         std::perror("Error deleting file");
     }
     else
@@ -37,4 +41,5 @@ void deleteDocument()
         std::printf("File deleted successfully\n");
     }
 }
+
 

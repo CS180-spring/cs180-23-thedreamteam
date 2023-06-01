@@ -1,5 +1,6 @@
 #ifndef VIEW_H
 #define VIEW_H
+
 #include <iostream>
 #include <vector>
 #include <string>
@@ -11,6 +12,6 @@ namespace fs = std::filesystem;
     // extern std::vector<std::string> foundFiles; 
 
     void viewDatabase();
-    void viewCurrCollectAndFiles()
+    void viewCurrCollectAndFiles(); 
 
 #endif

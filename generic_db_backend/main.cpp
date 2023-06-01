@@ -3,6 +3,7 @@
 #include "Search.h"
 #include "View.h"
 #include "Delete.h"
+#include "Update.h"
 
 #include <iostream>
 #include <fstream>
@@ -22,20 +23,14 @@
 using json = nlohmann::json;
 namespace fs = std::filesystem;
 
-void deleteDocument();
 void createDocument();
 
-<<<<<<< HEAD
 void getCollectionList(std::vector<std::string> &collectionList);
 std::string get_file_name(const std::string &file_path);
-=======
 
->>>>>>> 88ef216 (delete.cpp)
 
-void updateDocument();
-void updateDocumentValue();
-void searchParameter();
-void searchParameter();
+
+
 void handleSearchRequest(const std::string &param, const std::vector<std::string> &paramList, json &j);
 
 void filter();
@@ -170,34 +165,6 @@ int main()
     }
 }
 
-<<<<<<< HEAD
-void deleteDocument()
-{
-    std::cout << "Enter the file to delete from database (ex: ["
-              << "collectionname"
-              << "]/["
-              << "filename"
-              << "])" << std::endl;
-    std::string filepath;
-    std::cin >> filepath;
-
-    std::string filepathFormat = "./db/" + filepath;
-
-    const char *file = filepathFormat.c_str();
-
-    if (std::remove(file) != 0)
-    {
-        // If the file deletion fails, print an error message
-        std::cout << "File could not be deleted!\n";
-        std::perror("Error deleting file");
-    }
-    else
-    {
-        std::printf("File deleted successfully\n");
-    }
-}
-=======
->>>>>>> 88ef216 (delete.cpp)
 
 void createDocument()
 {
@@ -255,285 +222,8 @@ void createDocument()
     std::cout << "JSON file created successfully and stored in collection: " << collectionChoice << std::endl;
 }
 
-void updateDocument()
-{
-    std::string collectionName;
-    std::string fileName;
-    std::string pathToFileName;
-    std::string line;
-    std::vector<std::string> collectionList;
-    std::vector<std::string> filesInCollection;
 
-    std::cout << "First, we must locate the document to update.\n";
-    getCollectionList(collectionList);
-    if (collectionList.size() == 0)
-    {
-        std::cout << "No collections found. Please create a collection and document first.\n\n";
-        return;
-    }
-    else
-    {
-        std::cout << "Here are all the available collections: \n";
-        for (unsigned int i = 0; i < collectionList.size(); i++)
-        {
-            std::cout << collectionList.at(i) << " ";
-        }
-        std::cout << std::endl;
-        std::cout << "\n\n";
 
-        std::cout << "Enter the collection that the document is stored in: ";
-        std::cin >> collectionName;
-
-        std::cout << "Here are a list of files under that collection:\n";
-        getFileList(filesInCollection, collectionName);
-
-        std::cout << "\nSelect a file to view/update: ";
-        std::cin >> fileName;
-
-        pathToFileName = "./db/" + collectionName + "/" + fileName + ".json";
-        std::ifstream file(pathToFileName);
-        if (!file)
-        {
-            std::cout << "Error opening file\n";
-        }
-
-        while (getline(file, line))
-        {
-            std::cout << line << std::endl;
-        }
-        std::cout << "Enter the new text for the document (type END on a new line to finish): \n";
-        std::string json;
-        std::string input_line;
-        while (std::getline(std::cin, input_line))
-        {
-            if (input_line == "END")
-            {
-                break;
-            }
-            if (!json.empty())
-            {
-                json += '\n';
-            }
-            json += input_line;
-        }
-        std::cout << "\n\n";
-        std::ofstream fout(pathToFileName);
-        fout << json;
-        fout.close();
-    }
-}
-
-void updateDocumentValue()
-{
-    std::string collectionName;
-    std::string fileName;
-    std::string line;
-    std::string pathToFileName;
-    std::vector<std::string> collectionList;
-    std::vector<std::string> filesInCollection;
-
-    std::cout << "First, we must locate the document to update.\n";
-    getCollectionList(collectionList);
-    if (collectionList.empty())
-    {
-        std::cout << "No collections found. Please create a collection and document first.\n\n";
-        return;
-    }
-    else
-    {
-        std::cout << "Here are all the available collections: \n";
-        for (const std::string &collection : collectionList)
-        {
-            std::cout << collection << " ";
-        }
-        // std::cout   << "\n\n";
-
-        std::cout << "Enter the collection that the document is stored in: ";
-        std::cin >> collectionName;
-
-        std::cout << "Here are a list of files under that collection:\n";
-        getFileList(filesInCollection, collectionName);
-
-        std::cout << "\nSelect a file to view/update: ";
-        std::cin >> fileName;
-
-        pathToFileName = "./db/" + collectionName + "/" + fileName + ".json";
-        std::ifstream file(pathToFileName);
-        std::ifstream file2(pathToFileName);
-        if (!file || !file2)
-        {
-            std::cout << "Error opening file\n";
-            return;
-        }
-
-        while (getline(file2, line))
-        {
-            std::cout << line << "\n\n";
-        }
-        file2.close();
-        std::string fileContents((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
-        file.close();
-        rapidjson::Document document;
-        document.Parse(fileContents.c_str());
-
-        std::string key, updatedValue;
-        std::cout << "Enter the key to update: ";
-        std::cin >> key;
-        std::cout << "Enter the updated value: ";
-        std::cin >> updatedValue;
-
-        // Split the key into its component parts
-        std::vector<std::string> keys = convertToParamList(key);
-
-        rapidjson::Value *jsonValue = &document;
-        // CHATGPT referenced
-        //  Traverse the object to find the nested value
-        for (const std::string &subKey : keys)
-        {
-            if (jsonValue->IsArray()) // check if it's an array
-            {
-                size_t index = std::stoi(subKey);
-                if (index < jsonValue->Size()) // check if the index is valid
-                {
-                    jsonValue = &((*jsonValue)[index]);
-                }
-                else
-                {
-                    std::cout << "Index out of bounds: " << key << std::endl;
-                    return;
-                }
-            }
-            else if (jsonValue->IsObject() && jsonValue->HasMember(subKey.c_str()))
-            {
-                jsonValue = &((*jsonValue)[subKey.c_str()]);
-            }
-            else
-            {
-                std::cout << "Key not found: " << key << std::endl;
-                return;
-            }
-        }
-
-        if (jsonValue->IsString())
-        {
-            jsonValue->SetString(updatedValue.c_str(), updatedValue.size(), document.GetAllocator());
-        }
-        else if (jsonValue->IsInt())
-        {
-            jsonValue->SetInt(std::stoi(updatedValue));
-        }
-
-        // Write the updated JSON to the file
-        std::ofstream outputFile(pathToFileName);
-        if (!outputFile)
-        {
-            std::cout << "Error opening file for writing\n";
-            return;
-        }
-        rapidjson::StringBuffer buffer;
-        rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
-        document.Accept(writer);
-        outputFile << buffer.GetString();
-        outputFile.close();
-
-        std::cout << "JSON file updated successfully.\n";
-    }
-}
-
-void searchParameter()
-{
-    std::string collectionName;
-    std::string fileName;
-    std::string pathToFileName;
-    std::string line;
-    std::vector<std::string> collectionList;
-    std::vector<std::string> filesInCollection;
-    std::string parameter;
-
-    std::cout << "First, we must locate the document to search.\n";
-    getCollectionList(collectionList);
-    if (collectionList.size() == 0)
-    {
-        std::cout << "No collections found. Please create a collection and document first.\n\n";
-        return;
-    }
-
-    std::cout << "Here are all the available collections: \n";
-    printCollections(collectionList);
-
-    std::cout << "Enter the collection that the document is stored in: ";
-    std::cin >> collectionName;
-
-    std::cout << "Here are a list of files under that collection:\n";
-    getFileList(filesInCollection, collectionName);
-
-    std::cout << "Select a file to search: ";
-    std::cin >> fileName;
-    pathToFileName = "./db/" + collectionName + "/" + fileName + ".json";
-    std::ifstream file(pathToFileName);
-    if (!file)
-    {
-        std::cout << "Error opening file\n";
-        return;
-    }
-
-    std::cout << "\n\n";
-
-    std::cout << "Enter parameter you would like to search for: (ex. employee.name)" << std::endl;
-    std::cin >> parameter;
-    std::vector<std::string> paramList = convertToParamList(parameter);
-
-    std::ifstream ifs(pathToFileName);
-
-    json j = json::parse(ifs);
-    handleSearchRequest(parameter, paramList, j);
-}
-
-void handleSearchRequest(const std::string &param, const std::vector<std::string> &paramList, json &j)
-{
-    for (int i = 0; i < paramList.size(); ++i)
-    {
-        if (j.is_object())
-        {
-            if (j.contains(paramList.at(i)))
-            {
-                j = j[paramList.at(i)];
-            }
-            else
-            {
-                std::cout << "Could not find paramter within this JSON" << std::endl;
-                return;
-            }
-        }
-        else if (j.is_array())
-        {
-            char c = paramList.at(i)[0];
-            if (!isdigit(c))
-            {
-                return;
-            }
-            int index = std::stoi(paramList.at(i));
-            if (index >= 0 && index < j.size())
-            {
-                j = j[index];
-            }
-            else
-            {
-                std::cout << "Could not find this this parameter within this JSON" << std::endl;
-                return;
-            }
-        }
-        else
-        {
-            std::cout << "Could not find this parameter within this JSON" << std::endl;
-            return;
-        }
-    }
-    // prints json instance of where the search parameter is located.
-    std::cout << j << std::endl;
-    std::cout << "\n\n";
-    return;
-}
 
 void printFilteredValues(const json &jsonData, const std::string &keyPath)
 {
