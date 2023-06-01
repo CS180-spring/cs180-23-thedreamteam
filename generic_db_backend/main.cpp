@@ -95,8 +95,8 @@ int main()
         case (1):
             std::cout << "What would you like to add to the database?" << std::endl;
             std::cout << "......................................." << std::endl;
-            std::cout << "Press your 'a' key: to add a document" << std::endl;
-            std::cout << "Press your 'b' key: to add a database" << std::endl;
+            std::cout << "Press your 'a' key: to add a document to the database" << std::endl;
+            std::cout << "Press your 'b' key: to add a collection to the database" << std::endl;
             std::cout << "......................................." << std::endl;
             std::cin >> subChoice;
 
@@ -114,8 +114,10 @@ int main()
             deleteDocument();
             break;
         case (3):
-            std::cout << "Press your 'a' key: to keyword in the database" << std::endl; //make this view database file 
+            std::cout << "......................................." << std::endl;
+            std::cout << "Press your 'a' key: to search for a keyword in the database" << std::endl; //make this view database file 
             std::cout << "Press your 'b' key: to search for a parameter in the database" << std::endl;
+            std::cout << "......................................." << std::endl;
             std::cin >> subChoice;
 
             // searches the database
@@ -132,8 +134,10 @@ int main()
 
             break;
         case (4):
+            std::cout << "......................................." << std::endl;
             std::cout << "Press your 'a' key: to update a document" << std::endl;
             std::cout << "Press your 'b' key: to update a document value" << std::endl;
+            std::cout << "......................................." << std::endl;
             std::cin >> subChoice;
 
             // updates entire document
@@ -167,8 +171,6 @@ int main()
         }
     }
 }
-
-
 
 void deleteDocument()
 {
