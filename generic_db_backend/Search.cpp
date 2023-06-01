@@ -1,10 +1,20 @@
 #include "Search.h"
+#include "Essential.h"
 
 #include <iostream>
 #include <fstream>
-#include <vector>
+#include <cstdio>
 #include <string>
+#include <sys/stat.h>
+#include <vector>
 #include <filesystem>
+#include <algorithm>
+#include <sstream>
+#include "nlohmann/json.hpp"
+#include "rapidjson/document.h"
+#include "rapidjson/writer.h"
+#include "rapidjson/stringbuffer.h"
+#include "colormod.h"
 
 namespace fs = std::filesystem;
 
@@ -57,15 +67,3 @@ void searchKeywordInCollections(const std::string& keyword)
     }
 }
 
-// Helper function to get the list of files in a collection
-void getFileList(std::vector<std::string>& fileList, const std::string& collectionName)
-{
-    fs::path path_to_collection("./db/" + collectionName);
-    for (const auto& entry : fs::directory_iterator(path_to_collection))
-    {
-        if (entry.is_regular_file() && entry.path().extension() == ".json")
-        {
-            fileList.push_back(entry.path().string());
-        }
-    }
-}

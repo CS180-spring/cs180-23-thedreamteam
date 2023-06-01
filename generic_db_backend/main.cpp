@@ -1,3 +1,8 @@
+#include "Add.h"
+#include "Essential.h"
+#include "Search.h"
+
+
 #include <iostream>
 #include <fstream>
 #include <cstdio>
@@ -13,9 +18,6 @@
 #include "rapidjson/stringbuffer.h"
 #include "colormod.h"
 
-#include "Add.h"
-#include "Essential.h"
-#include "Search.h"
 
 using json = nlohmann::json;
 namespace fs = std::filesystem;
@@ -27,7 +29,7 @@ void createDocument();
 
 void getCollectionList(std::vector<std::string> &collectionList);
 std::string get_file_name(const std::string &file_path);
-void getFileList(std::vector<std::string> &fileList, const std::string &collectionName);
+
 void searchDatabase();
 void updateDocument();
 void updateDocumentValue();
@@ -38,7 +40,7 @@ void handleSearchRequest(const std::string &param, const std::vector<std::string
 void printCollections(const std::vector<std::string> &colList);
 void filter();
 std::vector<std::string> convertToParamList(std::string param);
-
+std::string keyword; 
 // Color::Modifier green(Color::FG_GREEN);
 // Color::Modifier magenta(Color::FG_MAGENTA);
 // Color::Modifier yellow(Color::FG_YELLOW);
@@ -117,7 +119,9 @@ int main()
             // searches the database
             if (subChoice == "a")
             {
-                searchKeywordInCollections();
+                std::cout << "Enter keyword you would like to search for" << std::endl; 
+                std::cin >> keyword;  
+                searchKeywordInCollections(keyword); 
             }
             else if (subChoice == "b") // searches for a specific thing in the database
             {
@@ -217,15 +221,7 @@ void getCollectionList(std::vector<std::string> &collectionList)
     }
 }
 
-void getFileList(std::vector<std::string> &fileList, const std::string &collectionName)
-{
-    //  generic_db_backend\db\searchFile
-    std::string pathToCollection = "./db/" + collectionName;
-    for (auto &i : fs::directory_iterator(pathToCollection))
-    {
-        std::cout    << i.path().filename() << " ";
-    }
-}
+
 
 /**
  * Search database for contents given file and collection name
